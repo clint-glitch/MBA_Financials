@@ -1,0 +1,2126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Master Builders App — Financial Forecast 2026–2028</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0b1120;
+    --card: #111827;
+    --card2: #1a2235;
+    --border: #1f2f47;
+    --gold: #f59e0b;
+    --gold2: #fbbf24;
+    --blue: #3b82f6;
+    --green: #10b981;
+    --red: #ef4444;
+    --purple: #8b5cf6;
+    --cyan: #06b6d4;
+    --orange: #f97316;
+    --pink: #ec4899;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --sub: #64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  /* ─── Header ─── */
+  .header {
+    background: linear-gradient(135deg, #0f1e35 0%, #0b1120 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--gold) 0%, #d97706 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .logo-text h1 { font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+  .logo-text p { font-size: 12px; color: var(--muted); }
+  .header-right { display: flex; align-items: center; gap: 16px; }
+  .date-badge {
+    background: var(--card2); border: 1px solid var(--border);
+    padding: 5px 12px; border-radius: 20px; font-size: 12px; color: var(--muted);
+  }
+  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block; margin-right: 6px; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* ─── Adoption Banner ─── */
+  .adoption-banner {
+    background: linear-gradient(135deg, #0f1e35 0%, #111827 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 28px;
+  }
+  .adoption-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
+  .adoption-title { font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .adoption-stats { display: flex; gap: 28px; flex-wrap: wrap; }
+  .adoption-stat { text-align: center; }
+  .adoption-stat .val { font-size: 22px; font-weight: 700; color: var(--gold); }
+  .adoption-stat .lbl { font-size: 11px; color: var(--sub); }
+  .slider-wrap { display: flex; align-items: center; gap: 16px; }
+  .slider-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--sub); margin-top: 6px; }
+  #adoptionSlider {
+    -webkit-appearance: none; width: 100%; height: 6px;
+    border-radius: 3px; outline: none; cursor: pointer;
+    background: linear-gradient(to right, var(--gold) 0%, var(--gold) var(--pct,15%), var(--border) var(--pct,15%), var(--border) 100%);
+  }
+  #adoptionSlider::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
+    background: var(--gold); border: 3px solid var(--bg); cursor: pointer;
+    box-shadow: 0 0 10px rgba(245,158,11,0.5);
+  }
+  #adoptionSlider::-moz-range-thumb {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--gold); border: 3px solid var(--bg); cursor: pointer;
+  }
+  .pct-badge {
+    background: var(--gold); color: #000; font-weight: 700; font-size: 16px;
+    padding: 6px 14px; border-radius: 8px; white-space: nowrap; min-width: 60px; text-align: center;
+  }
+
+  /* ─── KPI Cards ─── */
+  .kpi-row {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px; padding: 20px 28px 10px;
+  }
+  .kpi-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px 18px; position: relative; overflow: hidden;
+  }
+  .kpi-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--accent, var(--gold));
+  }
+  .kpi-label { font-size: 11px; color: var(--sub); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+  .kpi-value { font-size: 24px; font-weight: 700; color: var(--text); line-height: 1; }
+  .kpi-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .kpi-change { font-size: 12px; margin-top: 4px; }
+  .up { color: var(--green); } .down { color: var(--red); }
+
+  /* ─── Tabs ─── */
+  .tabs-bar {
+    display: flex; gap: 4px; padding: 14px 28px 0;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .tab-btn {
+    background: none; border: none; color: var(--sub); cursor: pointer;
+    font-size: 13px; font-weight: 600; padding: 8px 18px 12px;
+    border-bottom: 2px solid transparent; white-space: nowrap;
+    transition: all 0.2s; letter-spacing: 0.3px;
+  }
+  .tab-btn:hover { color: var(--muted); }
+  .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab-content { display: none; padding: 24px 28px; }
+  .tab-content.active { display: block; }
+
+  /* ─── Charts ─── */
+  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px; }
+  .chart-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; position: relative;
+  }
+  .chart-card.full { grid-column: 1 / -1; }
+  .chart-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .chart-sub { font-size: 12px; color: var(--sub); margin-bottom: 16px; }
+  .chart-wrap { position: relative; height: 260px; }
+  .chart-wrap.tall { height: 320px; }
+
+  /* ─── Table ─── */
+  .table-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; overflow-x: auto; margin-bottom: 20px;
+  }
+  .table-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 14px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead th {
+    text-align: right; color: var(--sub); font-weight: 600; text-transform: uppercase;
+    font-size: 10px; letter-spacing: 0.8px; padding: 6px 10px; border-bottom: 1px solid var(--border);
+  }
+  thead th:first-child { text-align: left; }
+  tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); }
+  tbody tr:hover { background: rgba(255,255,255,0.03); }
+  tbody td { padding: 7px 10px; text-align: right; color: var(--text); }
+  tbody td:first-child { text-align: left; color: var(--muted); }
+  .subtotal { background: rgba(245,158,11,0.06); font-weight: 600; }
+  .total-row { background: rgba(245,158,11,0.12); font-weight: 700; color: var(--gold) !important; }
+  .total-row td { color: var(--gold) !important; }
+  .neg { color: var(--red); }
+  .pos { color: var(--green); }
+
+  /* ─── Section Divider ─── */
+  .section-label {
+    font-size: 11px; color: var(--gold); text-transform: uppercase; letter-spacing: 1.2px;
+    font-weight: 700; margin: 0 0 12px; display: flex; align-items: center; gap: 8px;
+  }
+  .section-label::after { content:''; flex:1; height:1px; background: var(--border); }
+
+  /* ─── Legend chips ─── */
+  .legend-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+  .chip {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; color: var(--muted);
+    background: rgba(255,255,255,0.05); padding: 3px 8px; border-radius: 20px;
+  }
+  .chip-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* ─── Data Strategy ─── */
+  .strategy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .strategy-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px;
+  }
+  .strategy-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .strategy-card p { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 10px; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; margin-right: 4px; }
+  .tag-y1 { background: rgba(16,185,129,0.2); color: var(--green); }
+  .tag-y2 { background: rgba(59,130,246,0.2); color: var(--blue); }
+  .tag-y3 { background: rgba(139,92,246,0.2); color: var(--purple); }
+  .tag-future { background: rgba(245,158,11,0.2); color: var(--gold); }
+  .strategy-val { font-size: 18px; font-weight: 700; color: var(--gold); margin-top: 6px; }
+
+  /* ─── Assumptions panel ─── */
+  .assumptions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .assump-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .assump-title { font-size: 11px; color: var(--gold); font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+  .assump-row { display: flex; justify-content: space-between; font-size: 12px; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .assump-row:last-child { border: none; }
+  .assump-key { color: var(--sub); }
+  .assump-val { color: var(--text); font-weight: 500; }
+
+  /* ─── Year toggle ─── */
+  .year-toggle { display: flex; gap: 6px; margin-bottom: 18px; }
+  .yr-btn {
+    background: var(--card2); border: 1px solid var(--border); color: var(--sub);
+    padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;
+    transition: all 0.2s;
+  }
+  .yr-btn.active { background: var(--gold); color: #000; border-color: var(--gold); }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 768px) {
+    .charts-grid { grid-template-columns: 1fr; }
+    .header { flex-direction: column; gap: 10px; align-items: flex-start; }
+    .adoption-stats { gap: 16px; }
+  }
+
+  /* ─── Scrollbar ─── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ─── Highlight numbers ─── */
+  .num-highlight { color: var(--gold); font-weight: 700; }
+
+  /* ─── Tooltip override ─── */
+  .info-btn { background: none; border: 1px solid var(--border); color: var(--sub); border-radius: 50%; width: 18px; height: 18px; font-size: 10px; cursor: help; margin-left: 6px; }
+
+  .waterfall-pos { color: var(--green); }
+  .waterfall-neg { color: var(--red); }
+
+  .phase-pill {
+    display: inline-block; padding: 2px 10px; border-radius: 20px;
+    font-size: 10px; font-weight: 600;
+  }
+  .phase-1 { background: rgba(16,185,129,0.15); color: var(--green); }
+  .phase-2 { background: rgba(59,130,246,0.15); color: var(--blue); }
+  .phase-3 { background: rgba(245,158,11,0.15); color: var(--gold); }
+
+  /* ─── Interactive Assumptions ─── */
+  .reset-bar { display:flex;align-items:center;gap:14px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 18px;margin-bottom:20px;flex-wrap:wrap; }
+  .reset-bar-title { font-size:13px;font-weight:600;color:var(--text);flex:1; }
+  .changes-badge { background:rgba(245,158,11,0.2);color:var(--gold);border:1px solid rgba(245,158,11,0.4);padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;display:none; }
+  .changes-badge.visible { display:inline-block; }
+  .reset-all-btn { background:rgba(239,68,68,0.1);color:var(--red);border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s; }
+  .reset-all-btn:hover { background:rgba(239,68,68,0.2); }
+  .asec-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px; }
+  .asec { background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:opacity .3s; }
+  .asec.sec-disabled { opacity:0.4;pointer-events:none; }
+  .asec-header { display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--border);background:rgba(245,158,11,0.03); }
+  .asec-title { font-size:13px;font-weight:700;color:var(--text); }
+  .asec-body { padding:16px 18px; }
+  .cr { margin-bottom:12px; }
+  .cr:last-child { margin-bottom:0; }
+  .cr-top { display:flex;align-items:center;justify-content:space-between;margin-bottom:5px; }
+  .cr-label { font-size:12px;color:var(--muted); }
+  .cdot { font-size:9px;color:var(--gold);margin-left:3px;display:none;vertical-align:middle; }
+  .cdot.on { display:inline; }
+  .cr-val { font-size:12px;font-weight:700;color:var(--gold);background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);padding:2px 8px;border-radius:5px;min-width:58px;text-align:center;font-family:monospace; }
+  .aslider { -webkit-appearance:none;width:100%;height:5px;border-radius:3px;outline:none;cursor:pointer;background:linear-gradient(to right,var(--sc,#f59e0b) 0%,var(--sc,#f59e0b) var(--sp,50%),#1f2f47 var(--sp,50%),#1f2f47 100%); }
+  .aslider::-webkit-slider-thumb { -webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--sc,#f59e0b);border:2px solid var(--bg);cursor:pointer;box-shadow:0 0 6px rgba(245,158,11,0.4); }
+  .aslider::-moz-range-thumb { width:16px;height:16px;border-radius:50%;background:var(--sc,#f59e0b);border:2px solid var(--bg);cursor:pointer; }
+  .aslider.b { --sc:#3b82f6; }
+  .aslider.g { --sc:#10b981; }
+  .aslider.p { --sc:#8b5cf6; }
+  .anum { background:var(--card2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 9px;font-size:12px;width:120px;text-align:right; }
+  .anum:focus { outline:none;border-color:var(--gold); }
+  .anum-sm { width:80px; }
+  .anum-pre { font-size:12px;color:var(--sub);margin-right:3px; }
+  .atog { display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none; }
+  .atog input { display:none; }
+  .atog-t { width:34px;height:18px;border-radius:9px;background:#374151;transition:background .2s;position:relative;flex-shrink:0; }
+  .atog input:checked + .atog-t { background:var(--green); }
+  .atog-t::after { content:'';position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s; }
+  .atog input:checked + .atog-t::after { transform:translateX(16px); }
+  .atog-l { font-size:11px;color:var(--sub);font-weight:600; }
+  .atog input:checked ~ .atog-l { color:var(--green); }
+  .sub-sec { border-top:1px solid var(--border);margin-top:10px;padding-top:10px; }
+  .sub-sec-lbl { font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:8px; }
+  .dual-inp { display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center; }
+  .dual-sep { font-size:11px;color:var(--sub);text-align:center; }
+  .tier-grid { display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:4px; }
+  .tier-col label { font-size:10px;color:var(--sub);display:block;margin-bottom:3px; }
+  .tier-total { font-size:11px;text-align:right;margin-top:3px; }
+  .tier-ok { color:var(--green); }
+  .tier-warn { color:var(--red); }
+  .als { background:linear-gradient(135deg,rgba(245,158,11,0.06),rgba(16,185,129,0.04));border:1px solid rgba(245,158,11,0.2);border-radius:12px;padding:18px 20px;margin-top:20px; }
+  .als-title { font-size:13px;font-weight:700;color:var(--gold);margin-bottom:12px; }
+  .als-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px; }
+  .als-stat { background:rgba(255,255,255,0.04);border-radius:8px;padding:10px 12px; }
+  .als-val { font-size:18px;font-weight:700; }
+  .als-lbl { font-size:10px;color:var(--sub);margin-top:2px; }
+  /* ─── Valuation Tab ─── */
+  .val-grid { display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px; }
+  .val-card { background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px; }
+  .val-card.full { grid-column:1/-1; }
+  .val-card.highlight { border-color:rgba(245,158,11,0.4);background:linear-gradient(135deg,rgba(245,158,11,0.05),var(--card)); }
+  .val-label { font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px; }
+  .val-number { font-size:36px;font-weight:800;color:var(--gold);line-height:1; }
+  .val-sub { font-size:12px;color:var(--muted);margin-top:4px; }
+  .mult-slider-wrap { padding:16px 0; }
+  .scenario-row { display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:8px;margin-bottom:6px;background:rgba(255,255,255,0.03); }
+  .scenario-row.active-row { background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3); }
+  .scenario-name { font-size:13px;font-weight:600;color:var(--text); }
+  .scenario-mult { font-size:12px;color:var(--muted);padding:2px 8px;border-radius:4px;background:rgba(255,255,255,0.06); }
+  .scenario-val { font-size:15px;font-weight:700;color:var(--gold); }
+  @media (max-width:768px) { .val-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<!-- ─── HEADER ─── -->
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">🏗️</div>
+    <div class="logo-text">
+      <h1>Master Builders App</h1>
+      <p>Financial Forecast · 2026 – 2028</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="date-badge"><span class="live-dot"></span>Live Model · Apr 2026</span>
+    <span class="date-badge">52,000 Target Builders · AUS Market</span>
+  </div>
+</div>
+
+<!-- ─── ADOPTION SLIDER ─── -->
+<div class="adoption-banner">
+  <div class="adoption-header">
+    <div class="adoption-title">📊 Adoption Rate Control — Drag to Model Different Scenarios</div>
+    <div class="adoption-stats">
+      <div class="adoption-stat"><div class="val" id="stat-builders">0</div><div class="lbl">Active Builders (Y3)</div></div>
+      <div class="adoption-stat"><div class="val" id="stat-arr">$0M</div><div class="lbl">ARR (Month 36)</div></div>
+      <div class="adoption-stat"><div class="val" id="stat-rev3">$0M</div><div class="lbl">Total Rev (3yr)</div></div>
+      <div class="adoption-stat"><div class="val" id="stat-breakeven">—</div><div class="lbl">Break-even Month</div></div>
+    </div>
+  </div>
+  <div class="slider-wrap">
+    <div style="flex:1">
+      <input type="range" id="adoptionSlider" min="1" max="40" value="10" step="0.5">
+      <div class="slider-labels">
+        <span>1% Conservative</span>
+        <span>10% Moderate</span>
+        <span>20% Optimistic</span>
+        <span>40% Aggressive</span>
+      </div>
+    </div>
+    <div class="pct-badge" id="pctBadge">10%</div>
+  </div>
+</div>
+
+<!-- ─── KPI CARDS ─── -->
+<div class="kpi-row">
+  <div class="kpi-card" style="--accent:#10b981">
+    <div class="kpi-label">Year 1 Revenue</div>
+    <div class="kpi-value" id="kpi-y1rev">—</div>
+    <div class="kpi-sub" id="kpi-y1rev-sub">Jan–Dec 2026</div>
+  </div>
+  <div class="kpi-card" style="--accent:#3b82f6">
+    <div class="kpi-label">Year 2 Revenue</div>
+    <div class="kpi-value" id="kpi-y2rev">—</div>
+    <div class="kpi-sub" id="kpi-y2rev-sub">Jan–Dec 2027</div>
+  </div>
+  <div class="kpi-card" style="--accent:#f59e0b">
+    <div class="kpi-label">Year 3 Revenue</div>
+    <div class="kpi-value" id="kpi-y3rev">—</div>
+    <div class="kpi-sub" id="kpi-y3rev-sub">Jan–Dec 2028</div>
+  </div>
+  <div class="kpi-card" style="--accent:#8b5cf6">
+    <div class="kpi-label">Avg Rev / Builder</div>
+    <div class="kpi-value" id="kpi-perbuilder">—</div>
+    <div class="kpi-sub">Per Month (Steady State)</div>
+  </div>
+  <div class="kpi-card" style="--accent:#ef4444">
+    <div class="kpi-label">Total Capital Required</div>
+    <div class="kpi-value" id="kpi-capital">—</div>
+    <div class="kpi-sub">Pre Break-even Funding Need</div>
+  </div>
+  <div class="kpi-card" style="--accent:#06b6d4">
+    <div class="kpi-label">Y3 EBITDA Margin</div>
+    <div class="kpi-value" id="kpi-margin">—</div>
+    <div class="kpi-sub">Year 3 (2028)</div>
+  </div>
+</div>
+
+<!-- ─── TABS ─── -->
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="switchTab('overview')">📈 Overview</button>
+  <button class="tab-btn" onclick="switchTab('revenue')">💰 Revenue Streams</button>
+  <button class="tab-btn" onclick="switchTab('expenses')">📋 Expenses & Team</button>
+  <button class="tab-btn" onclick="switchTab('cashflow')">💸 Cash Flow</button>
+  <button class="tab-btn" onclick="switchTab('pl')">📊 P&L Detail</button>
+  <button class="tab-btn" onclick="switchTab('data')">🧠 Data Strategy</button>
+  <button class="tab-btn" onclick="switchTab('assumptions')">⚙️ Assumptions</button>
+  <button class="tab-btn" onclick="switchTab('valuation')">🏦 Valuation</button>
+</div>
+
+<!-- ════════ TAB: OVERVIEW ════════ -->
+<div id="tab-overview" class="tab-content active">
+  <div class="charts-grid">
+    <div class="chart-card full">
+      <div class="chart-title">Monthly Revenue by Stream — 36 Months</div>
+      <div class="chart-sub">Stacked area showing revenue contribution by category as adoption scales</div>
+      <div class="legend-row" id="overview-legend"></div>
+      <div class="chart-wrap tall"><canvas id="chart-overview-revenue"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Adoption Growth Curve</div>
+      <div class="chart-sub">Active builders on platform (of 52,000 target)</div>
+      <div class="chart-wrap"><canvas id="chart-adoption"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Revenue Mix (Year 3)</div>
+      <div class="chart-sub">Proportional contribution of each revenue stream</div>
+      <div class="chart-wrap"><canvas id="chart-pie"></canvas></div>
+    </div>
+    <div class="chart-card full">
+      <div class="chart-title">Monthly P&amp;L — Revenue vs. Expenses vs. Net Profit</div>
+      <div class="chart-sub">Break-even crossover highlighted in green</div>
+      <div class="chart-wrap tall"><canvas id="chart-pl-overview"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ TAB: REVENUE STREAMS ════════ -->
+<div id="tab-revenue" class="tab-content">
+  <div class="charts-grid">
+    <div class="chart-card full">
+      <div class="chart-title">Revenue Streams — Monthly Breakdown</div>
+      <div class="chart-sub">Individual stream performance across 36 months</div>
+      <div class="chart-wrap tall"><canvas id="chart-streams"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Subscription Tier Distribution</div>
+      <div class="chart-sub">Builder count by plan over time</div>
+      <div class="chart-wrap"><canvas id="chart-tiers"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Finance vs Marketplace Revenue</div>
+      <div class="chart-sub">Two dominant revenue categories vs total</div>
+      <div class="chart-wrap"><canvas id="chart-finmarket"></canvas></div>
+    </div>
+  </div>
+  <div class="table-card">
+    <div class="table-title">Revenue Per Active Builder — Monthly Breakdown by Phase</div>
+    <table id="table-perbuilder">
+      <thead><tr>
+        <th>Revenue Stream</th>
+        <th>Phase 1 (Mth 1–6)</th>
+        <th>Phase 2 (Mth 7–18)</th>
+        <th>Phase 3 (Mth 19–36)</th>
+        <th>Annual (Phase 3)</th>
+      </tr></thead>
+      <tbody id="tbody-perbuilder"></tbody>
+    </table>
+  </div>
+  <div class="table-card">
+    <div class="table-title">Annual Revenue Summary by Stream</div>
+    <table>
+      <thead><tr>
+        <th>Revenue Stream</th>
+        <th>2026 (Y1)</th>
+        <th>2027 (Y2)</th>
+        <th>2028 (Y3)</th>
+        <th>3yr Total</th>
+      </tr></thead>
+      <tbody id="tbody-annual-rev"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════ TAB: EXPENSES ════════ -->
+<div id="tab-expenses" class="tab-content">
+  <div class="charts-grid">
+    <div class="chart-card full">
+      <div class="chart-title">Monthly Expenses — Team vs Operations</div>
+      <div class="chart-sub">Headcount costs and operational expenditure across 36 months</div>
+      <div class="chart-wrap tall"><canvas id="chart-expenses"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Headcount Growth</div>
+      <div class="chart-sub">Team size over 36 months</div>
+      <div class="chart-wrap"><canvas id="chart-headcount"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Expense Mix (Year 3)</div>
+      <div class="chart-sub">Breakdown of cost categories in 2028</div>
+      <div class="chart-wrap"><canvas id="chart-expense-pie"></canvas></div>
+    </div>
+  </div>
+  <div class="table-card">
+    <div class="table-title">Annual Expense Detail</div>
+    <table>
+      <thead><tr>
+        <th>Expense Category</th>
+        <th>2026 (Y1)</th>
+        <th>2027 (Y2)</th>
+        <th>2028 (Y3)</th>
+        <th>3yr Total</th>
+      </tr></thead>
+      <tbody id="tbody-expenses"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════ TAB: CASH FLOW ════════ -->
+<div id="tab-cashflow" class="tab-content">
+  <div class="charts-grid">
+    <div class="chart-card full">
+      <div class="chart-title">Cumulative Cash Position</div>
+      <div class="chart-sub">Running cash balance — negative = funding required, positive = self-sustaining</div>
+      <div class="chart-wrap tall"><canvas id="chart-cashcumul"></canvas></div>
+    </div>
+    <div class="chart-card full">
+      <div class="chart-title">Monthly Cash Flow (Net)</div>
+      <div class="chart-sub">Monthly surplus / deficit — green = profitable month</div>
+      <div class="chart-wrap"><canvas id="chart-cashmonthly"></canvas></div>
+    </div>
+  </div>
+  <div class="table-card">
+    <div class="table-title">Quarterly Cash Flow Summary</div>
+    <table>
+      <thead><tr>
+        <th>Quarter</th>
+        <th>Revenue</th>
+        <th>Expenses</th>
+        <th>Net</th>
+        <th>Cumulative</th>
+      </tr></thead>
+      <tbody id="tbody-cashflow"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════ TAB: P&L DETAIL ════════ -->
+<div id="tab-pl" class="tab-content">
+  <div class="year-toggle">
+    <button class="yr-btn active" onclick="setPLYear(0)">All 36 Months</button>
+    <button class="yr-btn" onclick="setPLYear(1)">2026 (Y1)</button>
+    <button class="yr-btn" onclick="setPLYear(2)">2027 (Y2)</button>
+    <button class="yr-btn" onclick="setPLYear(3)">2028 (Y3)</button>
+  </div>
+  <div class="table-card">
+    <div class="table-title">Monthly Profit & Loss Statement</div>
+    <div style="overflow-x:auto">
+    <table style="min-width:900px">
+      <thead><tr id="pl-header"></tr></thead>
+      <tbody id="tbody-pl"></tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ TAB: DATA STRATEGY ════════ -->
+<div id="tab-data" class="tab-content">
+  <div style="margin-bottom:20px">
+    <p style="color:var(--muted); font-size:13px; line-height:1.7; max-width:800px">
+      Master Builders sits on an exceptionally valuable dataset — real-time construction project flows, subcontractor performance, payment behaviours, and supplier pricing across 52,000+ builders. Below are structured monetisation pathways from near-term (Year 1) through to long-term strategic plays.
+    </p>
+  </div>
+  <div class="strategy-grid">
+    <div class="strategy-card">
+      <span class="tag tag-y1">Year 1</span>
+      <h3>📊 Benchmark Reports & Analytics</h3>
+      <p>Anonymised industry benchmarks — average project margins, subcontractor rates by trade/region, payment performance scores. Sold as subscription reports to builders, developers, and lenders.</p>
+      <div><strong style="font-size:11px;color:var(--sub)">Target Customers:</strong> <span style="font-size:12px;color:var(--muted)">Builders (in-app), Property developers, Banks</span></div>
+      <div class="strategy-val">$50–$200/mo per subscriber</div>
+      <div style="font-size:11px;color:var(--sub);margin-top:4px">Est. Y2 potential: $2M–$8M ARR at 5% builder adoption</div>
+    </div>
+    <div class="strategy-card">
+      <span class="tag tag-y1">Year 1</span>
+      <h3>⭐ Subcontractor Credit Scoring</h3>
+      <p>Payment reliability scores derived from platform payment data — equivalent to a credit bureau for the trades industry. Licensed to lenders, insurers, and hiring platforms.</p>
+      <div><strong style="font-size:11px;color:var(--sub)">Target Customers:</strong> <span style="font-size:12px;color:var(--muted)">Trade insurers, Equipment finance, Banks</span></div>
+      <div class="strategy-val">$0.50–$2.00 per API query</div>
+      <div style="font-size:11px;color:var(--sub);margin-top:4px">Est. Y2 potential: $1M–$5M at scale</div>
+    </div>
+    <div class="strategy-card">
+      <span class="tag tag-y2">Year 2</span>
+      <h3>🏦 Lending Insights for Finance Partners</h3>
+      <p>Real project cash flow data fed into lending decisions — enabling revenue-based or invoice financing for builders and trades. Master Builders earns referral/data fees from finance partners.</p>
+      <div><strong style="font-size:11px;color:var(--sub)">Target Customers:</strong> <span style="font-size:12px;color:var(--muted)">Fintechs, Non-bank lenders, BNPL for trades</span></div>
+      <div class="strategy-val">0.5%–1.5% of loan originated</div>
+      <div style="font-size:11px;color:var(--sub);margin-top:4px">Est. Y3 potential: $10M–$40M at scale</div>
+    </div>
+    <div class="strategy-card">
+      <span class="tag tag-y2">Year 2</span>
+      <h3>🏗️ Materials Pricing Intelligence</h3>
+      <p>Aggregated supplier quotes and purchase orders create a real-time materials price index for Australian construction. Sold as a data feed to suppliers, cost estimators, and developers.</p>
+      <div><strong style="font-size:11px;color:var(--sub)">Target Customers:</strong> <span style="font-size:12px;color:var(--muted)">Quantity surveyors, Developers, Suppliers</span></div>
+      <div class="strategy-val">$500–$5,000/mo enterprise feed</div>
+      <div style="font-size:11px;color:var(--sub);margin-top:4px">Est. Y3 potential: $3M–$15M ARR</div>
+    </div>
+    <div class="strategy-card">
+      <span class="tag tag-y2">Year 2</span>
+      <h3>🎯 Targeted Advertising & Lead Gen</h3>
+      <p>Suppliers and product manufacturers pay for targeted placement inside the app — reaching builders at the point of procurement. High-intent, context-aware advertising.</p>
+      <div><strong style="font-size:11px;color:var(--sub)">Target Customers:</strong> <span style="font-size:12px;color:var(--muted)">Building material brands, Tool companies, Software vendors</span></div>
+      <div class="strategy-val">CPM $40–$120 / CPC $8–$30</div>
+      <div style="font-size:11px;color:var(--sub);margin-top:4px">Est. Y2 potential: $2M–$8M</div>
+    </div>
+    <div class="strategy-card">
+      <span class="tag tag-y3">Year 3</span>
+      <h3>📍 Regional Construction Activity Index</h3>
+      <p>Live construction starts, project volumes, and payment velocity by suburb/LGA. Sold as a planning intelligence tool to councils, REITs, and infrastructure investors.</p>
+      <div><strong style="font-size:11px;color:var(--sub)">Target Customers:</strong> <span style="font-size:12px;color:var(--muted)">Councils, REITs, Infrastructure funds, PropTech</span></div>
+      <div class="strategy-val">$10,000–$100,000/yr enterprise</div>
+      <div style="font-size:11px;color:var(--sub);margin-top:4px">Est. Y3 potential: $5M–$20M ARR</div>
+    </div>
+    <div class="strategy-card">
+      <span class="tag tag-y3">Year 3</span>
+      <h3>🤖 AI-Powered Project Risk Scoring</h3>
+      <p>ML models trained on project completion patterns, payment delays, and dispute data — surface risk scores to lenders, insurers, and developers before they commit capital.</p>
+      <div><strong style="font-size:11px;color:var(--sub)">Target Customers:</strong> <span style="font-size:12px;color:var(--muted)">Banks, Insurers, Developers, Surveyors</span></div>
+      <div class="strategy-val">SaaS $2,000–$20,000/mo</div>
+      <div style="font-size:11px;color:var(--sub);margin-top:4px">Est. Y3+ potential: $20M–$80M ARR</div>
+    </div>
+    <div class="strategy-card">
+      <span class="tag tag-future">Strategic / Exit</span>
+      <h3>📦 Data Licensing to Major Banks / ABS</h3>
+      <p>At scale, Master Builders holds what no public dataset has — granular, real-time construction economic activity. Strategic licensing to the RBA, ABS, ANZ, or CBA as a macro indicator.</p>
+      <div><strong style="font-size:11px;color:var(--sub)">Target Customers:</strong> <span style="font-size:12px;color:var(--muted)">RBA, ABS, Big 4 Banks, SuperFunds</span></div>
+      <div class="strategy-val">$1M–$10M+ per deal</div>
+      <div style="font-size:11px;color:var(--sub);margin-top:4px">Significant uplift to valuation / acquisition multiple</div>
+    </div>
+  </div>
+
+  <div style="margin-top:24px" class="chart-card">
+    <div class="chart-title">Projected Data Revenue Potential</div>
+    <div class="chart-sub">Estimated data monetisation revenue scenarios by Year 3 (not included in main model)</div>
+    <div class="chart-wrap"><canvas id="chart-data-revenue"></canvas></div>
+  </div>
+</div>
+
+<!-- ════════ TAB: ASSUMPTIONS ════════ -->
+<div id="tab-assumptions" class="tab-content">
+  <div class="reset-bar">
+    <span class="reset-bar-title">⚙️ Edit any value — the entire model updates instantly across all tabs</span>
+    <span class="changes-badge" id="changes-badge">0 changes</span>
+    <button class="reset-all-btn" onclick="resetAll()">↺ Reset All Defaults</button>
+  </div>
+  <div class="asec-grid">
+
+    <!-- BUILDER ECONOMICS -->
+    <div class="asec">
+      <div class="asec-header"><span class="asec-title">🏗️ Builder Economics</span></div>
+      <div class="asec-body">
+        <div class="cr"><div class="cr-top"><span class="cr-label">Total Target Builders <span class="cdot" id="cd-totalBuilders">●</span></span></div>
+          <input type="number" class="anum" id="num-totalBuilders" value="52000" min="1000" max="500000" step="1000" style="width:140px" oninput="onNum('totalBuilders',this.value,'totalBuilders')">
+        </div>
+        <div class="cr"><div class="cr-top"><span class="cr-label">Projects per Builder/yr <span class="cdot" id="cd-projectsPerYear">●</span></span><span class="cr-val" id="av-projectsPerYear">5 projects</span></div>
+          <input type="range" class="aslider" id="sl-projectsPerYear" min="1" max="15" step="1" value="5" oninput="onSl('projectsPerYear',this,'projectsPerYear',1,v=>v.toFixed(0)+' projects')">
+        </div>
+        <div class="cr"><div class="cr-top"><span class="cr-label">Avg Project Value <span class="cdot" id="cd-projectValue">●</span></span></div>
+          <div style="display:flex;align-items:center;gap:4px"><span class="anum-pre">$</span><input type="number" class="anum" id="num-projectValue" value="450000" min="10000" max="5000000" step="10000" oninput="onNum('projectValue',this.value,'projectValue')"></div>
+        </div>
+        <div class="cr"><div class="cr-top"><span class="cr-label">Builder Payment Days <span class="cdot" id="cd-builderPayDays">●</span></span><span class="cr-val" id="av-builderPayDays">20 days</span></div>
+          <input type="range" class="aslider b" id="sl-builderPayDays" min="5" max="90" step="5" value="20" oninput="onSl('builderPayDays',this,'builderPayDays',1,v=>v.toFixed(0)+' days')">
+        </div>
+        <div class="cr"><div class="cr-top"><span class="cr-label">Outsource Rate <span class="cdot" id="cd-outsourceRate">●</span></span><span class="cr-val" id="av-outsourceRate">80%</span></div>
+          <input type="range" class="aslider" id="sl-outsourceRate" min="20" max="100" step="5" value="80" oninput="onSl('outsourceRate',this,'outsourceRate',0.01,v=>v.toFixed(0)+'%')">
+        </div>
+        <div class="cr"><div class="cr-top"><span class="cr-label">Supplier Share of Outsource <span class="cdot" id="cd-supplierShare">●</span></span><span class="cr-val" id="av-supplierShare">60%</span></div>
+          <input type="range" class="aslider g" id="sl-supplierShare" min="30" max="80" step="5" value="60" oninput="onSl('supplierShare',this,'supplierShare',0.01,v=>v.toFixed(0)+'%')">
+          <div style="font-size:10px;color:var(--sub);margin-top:3px">Trades = remainder · Currently <span id="trades-share-display">40%</span></div>
+        </div>
+        <div class="cr"><div class="cr-top"><span class="cr-label">Subcontractor Payment Days <span class="cdot" id="cd-subPayDays">●</span></span><span class="cr-val" id="av-subPayDays">30 days</span></div>
+          <input type="range" class="aslider p" id="sl-subPayDays" min="5" max="90" step="5" value="30" oninput="onSl('subPayDays',this,'subPayDays',1,v=>v.toFixed(0)+' days')">
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBSCRIPTION -->
+    <div class="asec">
+      <div class="asec-header">
+        <span class="asec-title">💳 Subscription Pricing</span>
+        <label class="atog"><input type="checkbox" id="tog-subEnabled" checked onchange="onTog('subEnabled',this.checked,'sec-sub-body')"><span class="atog-t"></span><span class="atog-l"></span></label>
+      </div>
+      <div class="asec-body" id="sec-sub-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="cr"><div class="cr-top"><span class="cr-label">Free Tier</span></div><div style="font-size:13px;color:var(--sub);padding:5px 0">$0 / mo</div></div>
+          <div class="cr"><div class="cr-top"><span class="cr-label">Basic <span class="cdot" id="cd-priceBasic">●</span></span></div>
+            <div style="display:flex;align-items:center;gap:4px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-priceBasic" value="49" min="0" max="999" oninput="onNum('priceBasic',this.value,'priceBasic')"><span style="font-size:11px;color:var(--sub)">/mo</span></div>
+          </div>
+          <div class="cr"><div class="cr-top"><span class="cr-label">Pro <span class="cdot" id="cd-pricePro">●</span></span></div>
+            <div style="display:flex;align-items:center;gap:4px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-pricePro" value="99" min="0" max="999" oninput="onNum('pricePro',this.value,'pricePro')"><span style="font-size:11px;color:var(--sub)">/mo</span></div>
+          </div>
+          <div class="cr"><div class="cr-top"><span class="cr-label">Enterprise <span class="cdot" id="cd-priceEnterprise">●</span></span></div>
+            <div style="display:flex;align-items:center;gap:4px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-priceEnterprise" value="299" min="0" max="9999" oninput="onNum('priceEnterprise',this.value,'priceEnterprise')"><span style="font-size:11px;color:var(--sub)">/mo</span></div>
+          </div>
+        </div>
+        <div class="sub-sec">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <span class="sub-sec-lbl" style="margin-bottom:0">Contracts (Free Tier)</span>
+            <label class="atog"><input type="checkbox" id="tog-contractsEnabled" checked onchange="onTog('contractsEnabled',this.checked)"><span class="atog-t"></span><span class="atog-l"></span></label>
+          </div>
+          <div class="cr"><div class="cr-top"><span class="cr-label">Fee per Contract <span class="cdot" id="cd-contractFee">●</span></span></div>
+            <div style="display:flex;align-items:center;gap:8px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-contractFee" value="120" min="0" max="999" oninput="onNum('contractFee',this.value,'contractFee')"><span style="font-size:11px;color:var(--sub)">× 5/yr per builder</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIER DISTRIBUTION -->
+    <div class="asec">
+      <div class="asec-header"><span class="asec-title">📊 Tier Distribution (% of active builders)</span></div>
+      <div class="asec-body">
+        <div class="sub-sec-lbl">Phase 1 — Early Adopters (Months 1–6)</div>
+        <div class="tier-grid">
+          <div class="tier-col"><label>🆓 Free</label><input type="number" class="anum anum-sm" id="tier-1-free" value="55" min="0" max="100" oninput="onTier(1,0,this.value)"></div>
+          <div class="tier-col"><label>⚡ Basic</label><input type="number" class="anum anum-sm" id="tier-1-basic" value="27" min="0" max="100" oninput="onTier(1,1,this.value)"></div>
+          <div class="tier-col"><label>🚀 Pro</label><input type="number" class="anum anum-sm" id="tier-1-pro" value="13" min="0" max="100" oninput="onTier(1,2,this.value)"></div>
+          <div class="tier-col"><label>🏢 Ent</label><input type="number" class="anum anum-sm" id="tier-1-ent" value="5" min="0" max="100" oninput="onTier(1,3,this.value)"></div>
+        </div>
+        <div class="tier-total tier-ok" id="tier-total-1">Total: 100% ✓</div>
+        <div class="sub-sec" style="margin-top:14px">
+          <div class="sub-sec-lbl">Phase 3 — Mature Market (Months 19–36)</div>
+          <div class="tier-grid">
+            <div class="tier-col"><label>🆓 Free</label><input type="number" class="anum anum-sm" id="tier-3-free" value="38" min="0" max="100" oninput="onTier(3,0,this.value)"></div>
+            <div class="tier-col"><label>⚡ Basic</label><input type="number" class="anum anum-sm" id="tier-3-basic" value="34" min="0" max="100" oninput="onTier(3,1,this.value)"></div>
+            <div class="tier-col"><label>🚀 Pro</label><input type="number" class="anum anum-sm" id="tier-3-pro" value="18" min="0" max="100" oninput="onTier(3,2,this.value)"></div>
+            <div class="tier-col"><label>🏢 Ent</label><input type="number" class="anum anum-sm" id="tier-3-ent" value="10" min="0" max="100" oninput="onTier(3,3,this.value)"></div>
+          </div>
+          <div class="tier-total tier-ok" id="tier-total-3">Total: 100% ✓</div>
+        </div>
+        <div style="font-size:11px;color:var(--sub);margin-top:10px">Phase 2 is auto-interpolated between Phase 1 and Phase 3 values</div>
+      </div>
+    </div>
+
+    <!-- FINANCE REVENUE -->
+    <div class="asec">
+      <div class="asec-header"><span class="asec-title">💰 Finance Revenue</span><span style="font-size:11px;color:var(--sub)">Toggle each stream →</span></div>
+      <div class="asec-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:12px;font-weight:600;color:var(--text)">Guaranteed Payments (Incoming)</span>
+          <label class="atog"><input type="checkbox" id="tog-finGtdEnabled" checked onchange="onTog('finGtdEnabled',this.checked)"><span class="atog-t"></span><span class="atog-l"></span></label>
+        </div>
+        <div class="cr"><div class="cr-top"><span class="cr-label">Transaction Fee <span class="cdot" id="cd-finGtdRate">●</span></span><span class="cr-val" id="av-finGtdRate">0.30%</span></div>
+          <input type="range" class="aslider" id="sl-finGtdRate" min="0.05" max="1.0" step="0.05" value="0.30" oninput="onSl('finGtdRate',this,'finGtdRate',0.01,v=>v.toFixed(2)+'%')">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="cr"><div class="cr-top"><span class="cr-label">Adopt Start <span class="cdot" id="cd-finGtdAdoptStart">●</span></span><span class="cr-val" id="av-finGtdAdoptStart">40%</span></div>
+            <input type="range" class="aslider b" id="sl-finGtdAdoptStart" min="5" max="90" step="5" value="40" oninput="onSl('finGtdAdoptStart',this,'finGtdAdoptStart',0.01,v=>v.toFixed(0)+'%')">
+          </div>
+          <div class="cr"><div class="cr-top"><span class="cr-label">Adopt End <span class="cdot" id="cd-finGtdAdoptEnd">●</span></span><span class="cr-val" id="av-finGtdAdoptEnd">65%</span></div>
+            <input type="range" class="aslider b" id="sl-finGtdAdoptEnd" min="10" max="100" step="5" value="65" oninput="onSl('finGtdAdoptEnd',this,'finGtdAdoptEnd',0.01,v=>v.toFixed(0)+'%')">
+          </div>
+        </div>
+        <div class="sub-sec">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:12px;font-weight:600;color:var(--text)">Early Payment Fee (Outgoing)</span>
+            <label class="atog"><input type="checkbox" id="tog-finEarlyEnabled" checked onchange="onTog('finEarlyEnabled',this.checked)"><span class="atog-t"></span><span class="atog-l"></span></label>
+          </div>
+          <div class="cr"><div class="cr-top"><span class="cr-label">Early Payment Rate <span class="cdot" id="cd-finEarlyRate">●</span></span><span class="cr-val" id="av-finEarlyRate">0.070%</span></div>
+            <input type="range" class="aslider" id="sl-finEarlyRate" min="0.01" max="0.5" step="0.01" value="0.07" oninput="onSl('finEarlyRate',this,'finEarlyRate',0.01,v=>v.toFixed(3)+'%')">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div class="cr"><div class="cr-top"><span class="cr-label">Adopt Start <span class="cdot" id="cd-finEarlyAdoptStart">●</span></span><span class="cr-val" id="av-finEarlyAdoptStart">25%</span></div>
+              <input type="range" class="aslider b" id="sl-finEarlyAdoptStart" min="5" max="80" step="5" value="25" oninput="onSl('finEarlyAdoptStart',this,'finEarlyAdoptStart',0.01,v=>v.toFixed(0)+'%')">
+            </div>
+            <div class="cr"><div class="cr-top"><span class="cr-label">Adopt End <span class="cdot" id="cd-finEarlyAdoptEnd">●</span></span><span class="cr-val" id="av-finEarlyAdoptEnd">45%</span></div>
+              <input type="range" class="aslider b" id="sl-finEarlyAdoptEnd" min="10" max="100" step="5" value="45" oninput="onSl('finEarlyAdoptEnd',this,'finEarlyAdoptEnd',0.01,v=>v.toFixed(0)+'%')">
+            </div>
+          </div>
+        </div>
+        <div class="sub-sec">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:12px;font-weight:600;color:var(--text)">Float / Held Funds Income</span>
+            <label class="atog"><input type="checkbox" id="tog-finFloatEnabled" checked onchange="onTog('finFloatEnabled',this.checked)"><span class="atog-t"></span><span class="atog-l"></span></label>
+          </div>
+          <div class="cr"><div class="cr-top"><span class="cr-label">Float Interest Rate (PA) <span class="cdot" id="cd-floatRatePA">●</span></span><span class="cr-val" id="av-floatRatePA">4.50%PA</span></div>
+            <input type="range" class="aslider g" id="sl-floatRatePA" min="1" max="10" step="0.25" value="4.5" oninput="onSl('floatRatePA',this,'floatRatePA',0.01,v=>v.toFixed(2)+'%PA')">
+          </div>
+        </div>
+        <div class="sub-sec">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:12px;font-weight:600;color:var(--text)">Transaction Account Spread</span>
+            <label class="atog"><input type="checkbox" id="tog-finSpreadEnabled" checked onchange="onTog('finSpreadEnabled',this.checked)"><span class="atog-t"></span><span class="atog-l"></span></label>
+          </div>
+          <div class="cr"><div class="cr-top"><span class="cr-label">Spread Rate (PA) <span class="cdot" id="cd-txnSpreadRatePA">●</span></span><span class="cr-val" id="av-txnSpreadRatePA">1.50%PA</span></div>
+            <input type="range" class="aslider g" id="sl-txnSpreadRatePA" min="0.25" max="5" step="0.25" value="1.5" oninput="onSl('txnSpreadRatePA',this,'txnSpreadRatePA',0.01,v=>v.toFixed(2)+'%PA')">
+          </div>
+          <div class="cr"><div class="cr-top"><span class="cr-label">Avg Account Balance <span class="cdot" id="cd-txnAvgBalance">●</span></span></div>
+            <div style="display:flex;align-items:center;gap:4px"><span class="anum-pre">$</span><input type="number" class="anum" id="num-txnAvgBalance" value="75000" min="0" max="1000000" step="5000" oninput="onNum('txnAvgBalance',this.value,'txnAvgBalance')"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MARKETPLACE -->
+    <div class="asec">
+      <div class="asec-header">
+        <span class="asec-title">🛒 Marketplace Revenue</span>
+        <label class="atog"><input type="checkbox" id="tog-mktEnabled" checked onchange="onTog('mktEnabled',this.checked,'sec-mkt-body')"><span class="atog-t"></span><span class="atog-l"></span></label>
+      </div>
+      <div class="asec-body" id="sec-mkt-body">
+        <div style="font-size:11px;color:var(--sub);margin-bottom:12px">80% outsourced → 60% to Suppliers · 40% to Trades. Fees charged to the supplier/trade for marketplace engagement.</div>
+        <div class="sub-sec-lbl">Guaranteed Outgoing (0.3%)</div>
+        <div class="cr"><div class="cr-top"><span class="cr-label">Fee Rate <span class="cdot" id="cd-mktGtdOutRate">●</span></span><span class="cr-val" id="av-mktGtdOutRate">0.30%</span></div>
+          <input type="range" class="aslider" id="sl-mktGtdOutRate" min="0.05" max="1.0" step="0.05" value="0.30" oninput="onSl('mktGtdOutRate',this,'mktGtdOutRate',0.01,v=>v.toFixed(2)+'%')">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="cr"><div class="cr-top"><span class="cr-label">Adopt Start <span class="cdot" id="cd-mktGtdOutAdoptStart">●</span></span><span class="cr-val" id="av-mktGtdOutAdoptStart">30%</span></div>
+            <input type="range" class="aslider b" id="sl-mktGtdOutAdoptStart" min="5" max="80" step="5" value="30" oninput="onSl('mktGtdOutAdoptStart',this,'mktGtdOutAdoptStart',0.01,v=>v.toFixed(0)+'%')">
+          </div>
+          <div class="cr"><div class="cr-top"><span class="cr-label">Adopt End <span class="cdot" id="cd-mktGtdOutAdoptEnd">●</span></span><span class="cr-val" id="av-mktGtdOutAdoptEnd">55%</span></div>
+            <input type="range" class="aslider b" id="sl-mktGtdOutAdoptEnd" min="10" max="100" step="5" value="55" oninput="onSl('mktGtdOutAdoptEnd',this,'mktGtdOutAdoptEnd',0.01,v=>v.toFixed(0)+'%')">
+          </div>
+        </div>
+        <div class="sub-sec">
+          <div class="sub-sec-lbl">Supplier Engagement (4%)</div>
+          <div class="cr"><div class="cr-top"><span class="cr-label">Fee Rate <span class="cdot" id="cd-mktSupplierRate">●</span></span><span class="cr-val" id="av-mktSupplierRate">4.0%</span></div>
+            <input type="range" class="aslider g" id="sl-mktSupplierRate" min="0.5" max="8" step="0.5" value="4" oninput="onSl('mktSupplierRate',this,'mktSupplierRate',0.01,v=>v.toFixed(1)+'%')">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div class="cr"><div class="cr-top"><span class="cr-label">Adopt Start <span class="cdot" id="cd-mktSupplierAdoptStart">●</span></span><span class="cr-val" id="av-mktSupplierAdoptStart">15%</span></div>
+              <input type="range" class="aslider b" id="sl-mktSupplierAdoptStart" min="5" max="70" step="5" value="15" oninput="onSl('mktSupplierAdoptStart',this,'mktSupplierAdoptStart',0.01,v=>v.toFixed(0)+'%')">
+            </div>
+            <div class="cr"><div class="cr-top"><span class="cr-label">Adopt End <span class="cdot" id="cd-mktSupplierAdoptEnd">●</span></span><span class="cr-val" id="av-mktSupplierAdoptEnd">35%</span></div>
+              <input type="range" class="aslider b" id="sl-mktSupplierAdoptEnd" min="10" max="90" step="5" value="35" oninput="onSl('mktSupplierAdoptEnd',this,'mktSupplierAdoptEnd',0.01,v=>v.toFixed(0)+'%')">
+            </div>
+          </div>
+        </div>
+        <div class="sub-sec">
+          <div class="sub-sec-lbl">Trades Engagement (2%)</div>
+          <div class="cr"><div class="cr-top"><span class="cr-label">Fee Rate <span class="cdot" id="cd-mktTradesRate">●</span></span><span class="cr-val" id="av-mktTradesRate">2.0%</span></div>
+            <input type="range" class="aslider g" id="sl-mktTradesRate" min="0.25" max="5" step="0.25" value="2" oninput="onSl('mktTradesRate',this,'mktTradesRate',0.01,v=>v.toFixed(1)+'%')">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div class="cr"><div class="cr-top"><span class="cr-label">Adopt Start <span class="cdot" id="cd-mktTradesAdoptStart">●</span></span><span class="cr-val" id="av-mktTradesAdoptStart">20%</span></div>
+              <input type="range" class="aslider b" id="sl-mktTradesAdoptStart" min="5" max="70" step="5" value="20" oninput="onSl('mktTradesAdoptStart',this,'mktTradesAdoptStart',0.01,v=>v.toFixed(0)+'%')">
+            </div>
+            <div class="cr"><div class="cr-top"><span class="cr-label">Adopt End <span class="cdot" id="cd-mktTradesAdoptEnd">●</span></span><span class="cr-val" id="av-mktTradesAdoptEnd">45%</span></div>
+              <input type="range" class="aslider b" id="sl-mktTradesAdoptEnd" min="10" max="90" step="5" value="45" oninput="onSl('mktTradesAdoptEnd',this,'mktTradesAdoptEnd',0.01,v=>v.toFixed(0)+'%')">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEAM SALARIES -->
+    <div class="asec">
+      <div class="asec-header"><span class="asec-title">👥 Team Salaries (Monthly)</span></div>
+      <div class="asec-body">
+        <div style="font-size:11px;color:var(--sub);margin-bottom:12px">Founding team — additional hires scale proportionally from Month 4 onward.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="cr"><div class="cr-top"><span class="cr-label">4 × Founders <span class="cdot" id="cd-salFounders">●</span></span></div>
+            <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-salFounders" value="40000" min="0" max="500000" step="1000" oninput="onNum('salFounders',this.value,'salFounders');updateSalTotal()"></div>
+          </div>
+          <div class="cr"><div class="cr-top"><span class="cr-label">2 × Tech/Eng <span class="cdot" id="cd-salTech">●</span></span></div>
+            <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-salTech" value="20000" min="0" max="200000" step="1000" oninput="onNum('salTech',this.value,'salTech');updateSalTotal()"></div>
+          </div>
+          <div class="cr"><div class="cr-top"><span class="cr-label">1 × Marketing <span class="cdot" id="cd-salMarketing">●</span></span></div>
+            <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-salMarketing" value="7500" min="0" max="50000" step="500" oninput="onNum('salMarketing',this.value,'salMarketing');updateSalTotal()"></div>
+          </div>
+          <div class="cr"><div class="cr-top"><span class="cr-label">2 × Content <span class="cdot" id="cd-salContent">●</span></span></div>
+            <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-salContent" value="11600" min="0" max="100000" step="500" oninput="onNum('salContent',this.value,'salContent');updateSalTotal()"></div>
+          </div>
+          <div class="cr"><div class="cr-top"><span class="cr-label">1 × Compliance <span class="cdot" id="cd-salCompliance">●</span></span></div>
+            <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-salCompliance" value="8000" min="0" max="50000" step="500" oninput="onNum('salCompliance',this.value,'salCompliance');updateSalTotal()"></div>
+          </div>
+          <div class="cr"><div class="cr-top"><span class="cr-label">2 × Sales/BDM <span class="cdot" id="cd-salSales">●</span></span></div>
+            <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-salSales" value="14000" min="0" max="100000" step="500" oninput="onNum('salSales',this.value,'salSales');updateSalTotal()"></div>
+          </div>
+        </div>
+        <div style="background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.2);border-radius:6px;padding:8px 12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:var(--muted)">Founding Base Total</span>
+          <span style="font-size:14px;font-weight:700;color:var(--gold)" id="sal-base-total">$101,100/mo</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPERATING EXPENSES -->
+    <div class="asec">
+      <div class="asec-header"><span class="asec-title">🏢 Operating Expenses (Month 1 → Month 36)</span></div>
+      <div class="asec-body">
+        <div style="font-size:11px;color:var(--sub);margin-bottom:12px">Each line scales linearly from start value to end value over 36 months.</div>
+        <div style="display:grid;grid-template-columns:auto 1fr 12px 1fr;gap:6px;align-items:center;font-size:11px;color:var(--sub);margin-bottom:6px"><span></span><span>Month 1</span><span></span><span>Month 36</span></div>
+        <div style="display:grid;grid-template-columns:auto 1fr 12px 1fr;gap:6px;align-items:center">
+          <span style="font-size:11px;color:var(--muted);min-width:100px">☁️ Cloud/Infra</span>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-cloudStart" value="5000" step="500" min="0" oninput="onNum('cloudStart',this.value)"></div>
+          <span style="text-align:center;color:var(--sub)">→</span>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-cloudEnd" value="25000" step="500" min="0" oninput="onNum('cloudEnd',this.value)"></div>
+          <span style="font-size:11px;color:var(--muted);min-width:100px">📢 Marketing</span>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-mktgStart" value="15000" step="1000" min="0" oninput="onNum('mktgStart',this.value)"></div>
+          <span style="text-align:center;color:var(--sub)">→</span>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-mktgEnd" value="80000" step="1000" min="0" oninput="onNum('mktgEnd',this.value)"></div>
+          <span style="font-size:11px;color:var(--muted);min-width:100px">⚖️ Legal</span>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-legalStart" value="8000" step="500" min="0" oninput="onNum('legalStart',this.value)"></div>
+          <span style="text-align:center;color:var(--sub)">→</span>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-legalEnd" value="12000" step="500" min="0" oninput="onNum('legalEnd',this.value)"></div>
+          <span style="font-size:11px;color:var(--muted);min-width:100px">🏢 Office</span>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-officeStart" value="8000" step="500" min="0" oninput="onNum('officeStart',this.value)"></div>
+          <span style="text-align:center;color:var(--sub)">→</span>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-officeEnd" value="15000" step="500" min="0" oninput="onNum('officeEnd',this.value)"></div>
+          <span style="font-size:11px;color:var(--muted);min-width:100px">💻 Software</span>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-softwareStart" value="5000" step="500" min="0" oninput="onNum('softwareStart',this.value)"></div>
+          <span style="text-align:center;color:var(--sub)">→</span>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-softwareEnd" value="10000" step="500" min="0" oninput="onNum('softwareEnd',this.value)"></div>
+          <span style="font-size:11px;color:var(--muted);min-width:100px">🛡️ Insurance</span>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-insuranceStart" value="3000" step="250" min="0" oninput="onNum('insuranceStart',this.value)"></div>
+          <span style="text-align:center;color:var(--sub)">→</span>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-insuranceEnd" value="5000" step="250" min="0" oninput="onNum('insuranceEnd',this.value)"></div>
+          <span style="font-size:11px;color:var(--muted);min-width:100px">📒 Accounting</span>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-accountingStart" value="3000" step="250" min="0" oninput="onNum('accountingStart',this.value)"></div>
+          <span style="text-align:center;color:var(--sub)">→</span>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-accountingEnd" value="8000" step="250" min="0" oninput="onNum('accountingEnd',this.value)"></div>
+          <span style="font-size:11px;color:var(--muted);min-width:100px">✈️ Travel/BD</span>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-travelStart" value="5000" step="500" min="0" oninput="onNum('travelStart',this.value)"></div>
+          <span style="text-align:center;color:var(--sub)">→</span>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-travelEnd" value="10000" step="500" min="0" oninput="onNum('travelEnd',this.value)"></div>
+          <span style="font-size:11px;color:var(--muted);min-width:100px">🎧 Support</span>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-supportStart" value="2000" step="500" min="0" oninput="onNum('supportStart',this.value)"></div>
+          <span style="text-align:center;color:var(--sub)">→</span>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-supportEnd" value="20000" step="500" min="0" oninput="onNum('supportEnd',this.value)"></div>
+          <span style="font-size:11px;color:var(--muted);min-width:100px">📦 Misc</span>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-miscStart" value="5000" step="500" min="0" oninput="onNum('miscStart',this.value)"></div>
+          <span style="text-align:center;color:var(--sub)">→</span>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-miscEnd" value="10000" step="500" min="0" oninput="onNum('miscEnd',this.value)"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /asec-grid -->
+
+  <!-- LIVE SUMMARY -->
+  <div class="als">
+    <div class="als-title">📊 Live Per-Builder Revenue — Phase 3 Steady State (updates as you edit)</div>
+    <div class="als-grid">
+      <div class="als-stat" id="als-sub"><div class="als-val" style="color:#f59e0b">—</div><div class="als-lbl">Subscription /mo</div></div>
+      <div class="als-stat" id="als-contracts"><div class="als-val" style="color:#fbbf24">—</div><div class="als-lbl">Contracts /mo</div></div>
+      <div class="als-stat" id="als-fin"><div class="als-val" style="color:#3b82f6">—</div><div class="als-lbl">Finance /mo</div></div>
+      <div class="als-stat" id="als-mkt"><div class="als-val" style="color:#10b981">—</div><div class="als-lbl">Marketplace /mo</div></div>
+      <div class="als-stat" id="als-total"><div class="als-val" style="color:var(--gold);font-size:22px">—</div><div class="als-lbl">Total per Builder /mo</div></div>
+      <div class="als-stat" id="als-annual"><div class="als-val" style="color:var(--green);font-size:22px">—</div><div class="als-lbl">Total per Builder /yr</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ TAB: VALUATION ════════ -->
+<div id="tab-valuation" class="tab-content">
+  <div style="margin-bottom:20px">
+    <p style="color:var(--muted);font-size:13px;line-height:1.7;max-width:800px">
+      Valuation is driven by the revenue multiple applied to Annual Recurring Revenue (ARR). High-growth construction fintech and marketplace businesses typically trade at <strong style="color:var(--gold)">15–25× ARR</strong>. Your baseline target is <strong style="color:var(--gold)">20× ARR</strong>. Adjust the multiplier and see how adoption and revenue assumptions flow through to enterprise value.
+    </p>
+  </div>
+  <div class="val-grid">
+    <!-- Multiplier Control -->
+    <div class="val-card full" style="background:linear-gradient(135deg,rgba(245,158,11,0.06),var(--card))">
+      <div class="chart-title">🎚️ Revenue Multiple — Drag to Model Valuation Scenarios</div>
+      <div class="chart-sub" style="margin-bottom:16px">Applies to Year 3 ARR (Month 36 annualised). Adjust adoption slider above to change the revenue base.</div>
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:8px">
+        <div style="flex:1">
+          <input type="range" id="multSlider" class="aslider" style="--sp:47.4%;--sc:#f59e0b" min="1" max="40" step="0.5" value="20" oninput="onMultSlider(this)">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--sub);margin-top:6px">
+            <span>1× Distressed</span><span>10× Early Stage</span><span>20× Growth (Baseline)</span><span>30× Hyper</span><span>40× Peak</span>
+          </div>
+        </div>
+        <div style="background:var(--gold);color:#000;font-size:22px;font-weight:800;padding:8px 18px;border-radius:10px;min-width:70px;text-align:center" id="mult-badge">20×</div>
+      </div>
+    </div>
+
+    <!-- Key Valuation KPIs -->
+    <div class="val-card highlight">
+      <div class="val-label">🏆 Enterprise Value (Y3 ARR × Multiple)</div>
+      <div class="val-number" id="val-enterprise">—</div>
+      <div class="val-sub" id="val-enterprise-sub">Based on Month 36 ARR × 20×</div>
+    </div>
+    <div class="val-card highlight">
+      <div class="val-label">📈 Year 3 ARR (Month 36 × 12)</div>
+      <div class="val-number" id="val-arr">—</div>
+      <div class="val-sub">Annualised from final month revenue run-rate</div>
+    </div>
+    <div class="val-card">
+      <div class="val-label">💰 3-Year Cumulative Revenue</div>
+      <div class="val-number" id="val-cumrev" style="font-size:28px">—</div>
+      <div class="val-sub">Total revenue Jan 2026 – Dec 2028</div>
+    </div>
+    <div class="val-card">
+      <div class="val-label">📊 Y3 EBITDA Implied Value</div>
+      <div class="val-number" id="val-ebitda" style="font-size:28px">—</div>
+      <div class="val-sub">15× EBITDA (secondary cross-check)</div>
+    </div>
+    <div class="val-card">
+      <div class="val-label">💵 Revenue per Builder (Y3 ARR)</div>
+      <div class="val-number" id="val-per-builder" style="font-size:28px">—</div>
+      <div class="val-sub">Annual revenue generated per active builder</div>
+    </div>
+    <div class="val-card">
+      <div class="val-label">🏗️ Active Builders (Month 36)</div>
+      <div class="val-number" id="val-builders" style="font-size:28px">—</div>
+      <div class="val-sub">At current adoption slider setting</div>
+    </div>
+
+    <!-- Scenario Table -->
+    <div class="val-card full">
+      <div class="chart-title">Valuation Scenarios — Revenue Multiple × Year 3 ARR</div>
+      <div class="chart-sub" style="margin-bottom:16px">How enterprise value changes across multiple scenarios. Highlighted row = current slider.</div>
+      <div id="scenario-table"></div>
+    </div>
+
+    <!-- Valuation Chart -->
+    <div class="val-card full">
+      <div class="chart-title">Enterprise Value Trajectory — Monthly ARR × Multiple</div>
+      <div class="chart-sub">Running valuation across 36 months at current multiple</div>
+      <div class="chart-wrap tall"><canvas id="chart-valuation"></canvas></div>
+    </div>
+
+    <!-- Comparable Companies -->
+    <div class="val-card full">
+      <div class="chart-title">📐 Comparable Company Benchmarks</div>
+      <div class="chart-sub" style="margin-bottom:14px">Construction tech and fintech marketplace comparables — basis for the 20× target multiple</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px">
+        <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px 14px">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">Procore Technologies</div>
+          <div style="font-size:11px;color:var(--sub);margin:4px 0">Construction SaaS · NYSE: PCOR</div>
+          <div style="font-size:18px;font-weight:700;color:var(--gold)">~12–18× ARR</div>
+          <div style="font-size:11px;color:var(--muted)">At growth stage; peaked at 40× in 2021</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px 14px">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">Stripe (Private)</div>
+          <div style="font-size:11px;color:var(--sub);margin:4px 0">Fintech Payments Platform</div>
+          <div style="font-size:18px;font-weight:700;color:var(--gold)">~20–30× ARR</div>
+          <div style="font-size:11px;color:var(--muted)">Marketplace + payments combo</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px 14px">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">Buildertrend</div>
+          <div style="font-size:11px;color:var(--sub);margin:4px 0">Construction SaaS · Private</div>
+          <div style="font-size:18px;font-weight:700;color:var(--gold)">~15–25× ARR</div>
+          <div style="font-size:11px;color:var(--muted)">Acquired at significant premium</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px 14px">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">Coupa Software</div>
+          <div style="font-size:11px;color:var(--sub);margin:4px 0">B2B Spend Mgmt · Taken Private</div>
+          <div style="font-size:18px;font-weight:700;color:var(--gold)">~8–15× ARR</div>
+          <div style="font-size:11px;color:var(--muted)">Marketplace + fintech blend</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px 14px">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">Lendi / Aussie (Aus)</div>
+          <div style="font-size:11px;color:var(--sub);margin:4px 0">Aus Fintech Marketplace</div>
+          <div style="font-size:18px;font-weight:700;color:var(--gold)">~10–20× ARR</div>
+          <div style="font-size:11px;color:var(--muted)">Local market comparable</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:12px 14px">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">Master Builders Target</div>
+          <div style="font-size:11px;color:var(--sub);margin:4px 0">Construction Fintech + Marketplace</div>
+          <div style="font-size:18px;font-weight:700;color:var(--gold)">20× ARR Baseline</div>
+          <div style="font-size:11px;color:var(--muted)">Combines SaaS + fintech + marketplace</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div style="height:40px"></div>
+
+<script>
+// ════════════════════════════════════════════════════════
+// MASTER BUILDERS FINANCIAL MODEL — CORE ENGINE
+// ════════════════════════════════════════════════════════
+
+// ─── Central Assumptions Object ───
+const DEFAULTS = {
+  totalBuilders:52000, projectValue:450000, projectsPerYear:5,
+  builderPayDays:20, outsourceRate:0.80, supplierShare:0.60, subPayDays:30,
+  subEnabled:true, priceFree:0, priceBasic:49, pricePro:99, priceEnterprise:299,
+  contractsEnabled:true, contractFee:120,
+  tierPh1:[0.55,0.27,0.13,0.05], tierPh2:[0.45,0.32,0.16,0.07], tierPh3:[0.38,0.34,0.18,0.10],
+  finGtdEnabled:true, finGtdRate:0.003, finGtdAdoptStart:0.40, finGtdAdoptEnd:0.65,
+  finEarlyEnabled:true, finEarlyRate:0.0007, finEarlyAdoptStart:0.25, finEarlyAdoptEnd:0.45,
+  finFloatEnabled:true, floatRatePA:0.045,
+  finSpreadEnabled:true, txnSpreadRatePA:0.015, txnAvgBalance:75000,
+  mktEnabled:true,
+  mktGtdOutRate:0.003, mktGtdOutAdoptStart:0.30, mktGtdOutAdoptEnd:0.55,
+  mktSupplierRate:0.04, mktSupplierAdoptStart:0.15, mktSupplierAdoptEnd:0.35,
+  mktTradesRate:0.02, mktTradesAdoptStart:0.20, mktTradesAdoptEnd:0.45,
+  salFounders:40000, salTech:20000, salMarketing:7500, salContent:11600, salCompliance:8000, salSales:14000,
+  cloudStart:5000,cloudEnd:25000, mktgStart:15000,mktgEnd:80000,
+  legalStart:8000,legalEnd:12000, officeStart:8000,officeEnd:15000,
+  softwareStart:5000,softwareEnd:10000, insuranceStart:3000,insuranceEnd:5000,
+  accountingStart:3000,accountingEnd:8000, travelStart:5000,travelEnd:10000,
+  supportStart:2000,supportEnd:20000, miscStart:5000,miscEnd:10000,
+};
+let A = {...DEFAULTS};
+
+// ─── Adoption S-curve ───
+function adoptionRate(month, peakPct) {
+  const k = 0.22, m0 = 17.5;
+  const raw = 1/(1+Math.exp(-k*(month-m0)));
+  const rawMax = 1/(1+Math.exp(-k*(36-m0)));
+  const rawMin = 1/(1+Math.exp(-k*(0-m0)));
+  return (peakPct/100) * ((raw-rawMin)/(rawMax-rawMin)) * A.totalBuilders;
+}
+
+// ─── Phase helper ───
+function getPhase(month) { return month<=6?1:month<=18?2:3; }
+
+// ─── Per-builder monthly revenue (uses A object) ───
+function builderRevenue(month) {
+  const prog = (month-1)/35;
+  const mIn  = (A.projectValue * A.projectsPerYear) / 12;
+  const mOut = mIn * A.outsourceRate;
+  const mSup = mOut * A.supplierShare;
+  const mTrd = mOut * (1-A.supplierShare);
+  const phase = getPhase(month);
+  // Interpolate tier mix between phase values
+  const t1=A.tierPh1, t2=A.tierPh2, t3=A.tierPh3;
+  const tierMix = phase===1?t1:phase===2?t2:t3;
+  const blendedSub = A.subEnabled ? tierMix[0]*A.priceFree + tierMix[1]*A.priceBasic + tierMix[2]*A.pricePro + tierMix[3]*A.priceEnterprise : 0;
+  const contracts = A.contractsEnabled ? tierMix[0]*(5*A.contractFee/12) : 0;
+  const gIn  = A.finGtdAdoptStart  + prog*(A.finGtdAdoptEnd  - A.finGtdAdoptStart);
+  const eAd  = A.finEarlyAdoptStart+ prog*(A.finEarlyAdoptEnd- A.finEarlyAdoptStart);
+  const gOut = A.mktGtdOutAdoptStart+prog*(A.mktGtdOutAdoptEnd-A.mktGtdOutAdoptStart);
+  const sAd  = A.mktSupplierAdoptStart+prog*(A.mktSupplierAdoptEnd-A.mktSupplierAdoptStart);
+  const tAd  = A.mktTradesAdoptStart +prog*(A.mktTradesAdoptEnd -A.mktTradesAdoptStart);
+  const finGuaranteedIn = A.finGtdEnabled    ? mIn *gIn *A.finGtdRate                          : 0;
+  const finEarlyPay     = A.finEarlyEnabled  ? mOut*eAd *A.finEarlyRate                        : 0;
+  const floatIn         = A.finFloatEnabled  ? mIn *gIn *(A.builderPayDays/30)*(A.floatRatePA/12):0;
+  const floatOut        = A.finFloatEnabled  ? mOut*gOut*(A.subPayDays/30)   *(A.floatRatePA/12):0;
+  const txnSpread       = A.finSpreadEnabled ? A.txnAvgBalance*(A.txnSpreadRatePA/12)          : 0;
+  const mktGuarOut  = A.mktEnabled ? mOut*gOut*A.mktGtdOutRate  : 0;
+  const mktSupplier = A.mktEnabled ? mSup*sAd *A.mktSupplierRate: 0;
+  const mktTrades   = A.mktEnabled ? mTrd*tAd *A.mktTradesRate  : 0;
+  return {subscription:blendedSub,contracts,finGuaranteedIn,finEarlyPay,floatIn,floatOut,txnSpread,mktGuarOut,mktSupplier,mktTrades,
+    total:blendedSub+contracts+finGuaranteedIn+finEarlyPay+floatIn+floatOut+txnSpread+mktGuarOut+mktSupplier+mktTrades};
+}
+
+// ─── Expense model (uses A object) ───
+function getExpenses(month) {
+  const base = A.salFounders+A.salTech+A.salMarketing+A.salContent+A.salCompliance+A.salSales;
+  const sc = base/101100;
+  let salaries = base;
+  if(month>=4)  salaries+=18000*sc; if(month>=7)  salaries+=16000*sc;
+  if(month>=10) salaries+=10000*sc; if(month>=13) salaries+=32000*sc;
+  if(month>=16) salaries+=10000*sc; if(month>=19) salaries+=25000*sc;
+  if(month>=22) salaries+=15000*sc; if(month>=25) salaries+=60000*sc;
+  if(month>=28) salaries+=15000*sc; if(month>=31) salaries+=28000*sc;
+  if(month>=34) salaries+=20000*sc;
+  const p=(month-1)/35, L=(s,e)=>s+p*(e-s);
+  const cloud=L(A.cloudStart,A.cloudEnd), marketing=L(A.mktgStart,A.mktgEnd);
+  const legal=L(A.legalStart,A.legalEnd), office=L(A.officeStart,A.officeEnd);
+  const software=L(A.softwareStart,A.softwareEnd), insurance=L(A.insuranceStart,A.insuranceEnd);
+  const accounting=L(A.accountingStart,A.accountingEnd), travel=L(A.travelStart,A.travelEnd);
+  const support=L(A.supportStart,A.supportEnd), misc=L(A.miscStart,A.miscEnd);
+  const opex=cloud+marketing+legal+office+software+insurance+accounting+travel+support+misc;
+  return {salaries,cloud,marketing,legal,office,software,insurance,accounting,travel,support,misc,opex,total:salaries+opex};
+}
+
+// ─── Build 36-month dataset ───
+let MODEL = [];
+
+function rebuildModel(adoptionPct) {
+  MODEL = [];
+  for (let m = 1; m <= 36; m++) {
+    const builders = adoptionRate(m, adoptionPct);
+    const rev = builderRevenue(m);
+    const exp = getExpenses(m);
+    const monthlyRev = rev.total * builders;
+    const monthlyExp = exp.total;
+    const net = monthlyRev - monthlyExp;
+
+    const year = m <= 12 ? 1 : m <= 24 ? 2 : 3;
+    const monthName = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][(m-1) % 12];
+    const yearLabel = 2025 + year;
+
+    MODEL.push({
+      month: m,
+      label: `${monthName} ${yearLabel}`,
+      shortLabel: `${monthName} '${String(yearLabel).slice(2)}`,
+      year,
+      builders: Math.round(builders),
+      rev: { ...rev, total: monthlyRev,
+        subscription: rev.subscription * builders,
+        contracts: rev.contracts * builders,
+        finGuaranteedIn: rev.finGuaranteedIn * builders,
+        finEarlyPay: rev.finEarlyPay * builders,
+        floatIn: rev.floatIn * builders,
+        floatOut: rev.floatOut * builders,
+        txnSpread: rev.txnSpread * builders,
+        mktGuarOut: rev.mktGuarOut * builders,
+        mktSupplier: rev.mktSupplier * builders,
+        mktTrades: rev.mktTrades * builders,
+      },
+      exp,
+      net,
+    });
+  }
+}
+
+// ─── Helpers ───
+function fmt(n, decimals=0) {
+  if (Math.abs(n) >= 1e9) return '$' + (n/1e9).toFixed(1) + 'B';
+  if (Math.abs(n) >= 1e6) return '$' + (n/1e6).toFixed(decimals > 0 ? decimals : 1) + 'M';
+  if (Math.abs(n) >= 1e3) return '$' + (n/1e3).toFixed(0) + 'K';
+  return '$' + n.toFixed(0);
+}
+function fmtK(n) { return n >= 1e6 ? (n/1e6).toFixed(1)+'M' : n >= 1e3 ? (n/1e3).toFixed(0)+'K' : n.toFixed(0); }
+function sumYear(field, year) { return MODEL.filter(r=>r.year===year).reduce((s,r)=>s+(r[field]||0),0); }
+function sumRevYear(stream, year) { return MODEL.filter(r=>r.year===year).reduce((s,r)=>s+(r.rev[stream]||0),0); }
+function sumExpYear(field, year) { return MODEL.filter(r=>r.year===year).reduce((s,r)=>s+(r.exp[field]||0),0); }
+
+// ─── Chart registry ───
+const charts = {};
+function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+const COLORS = {
+  subscription: '#f59e0b',
+  contracts:    '#fbbf24',
+  finance:      '#3b82f6',
+  float:        '#60a5fa',
+  txnSpread:    '#93c5fd',
+  marketplace:  '#10b981',
+  mktSupplier:  '#34d399',
+  mktTrades:    '#6ee7b7',
+  expenses:     '#ef4444',
+  net:          '#8b5cf6',
+};
+
+const chartDefaults = {
+  animation: { duration: 600 },
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      backgroundColor: '#1e293b',
+      borderColor: '#1f2f47',
+      borderWidth: 1,
+      titleColor: '#f1f5f9',
+      bodyColor: '#94a3b8',
+      callbacks: {
+        label: ctx => ` ${ctx.dataset.label}: ${fmt(ctx.raw)}`
+      }
+    }
+  },
+  scales: {
+    x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b', font: { size: 10 }, maxTicksLimit: 12 }},
+    y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b', font: { size: 10 },
+      callback: v => fmt(v) }}
+  }
+};
+
+// ─── Render functions ───
+
+function renderOverviewRevChart() {
+  destroyChart('overview-revenue');
+  const labels = MODEL.map(r => r.shortLabel);
+  const streams = [
+    { key: 'subscription', label: 'Subscription', color: '#f59e0b' },
+    { key: 'contracts',    label: 'Contracts',    color: '#fbbf24' },
+    { key: 'finGuaranteedIn', label: 'Finance — Guaranteed In', color: '#3b82f6' },
+    { key: 'finEarlyPay', label: 'Finance — Early Pay', color: '#2563eb' },
+    { key: 'floatIn',     label: 'Finance — Float Income', color: '#60a5fa' },
+    { key: 'txnSpread',   label: 'Finance — Txn Spread', color: '#93c5fd' },
+    { key: 'mktGuarOut',  label: 'Marketplace — Guaranteed', color: '#10b981' },
+    { key: 'mktSupplier', label: 'Marketplace — Suppliers', color: '#34d399' },
+    { key: 'mktTrades',   label: 'Marketplace — Trades', color: '#6ee7b7' },
+  ];
+  // Build legend
+  const leg = document.getElementById('overview-legend');
+  leg.innerHTML = streams.map(s => `<div class="chip"><div class="chip-dot" style="background:${s.color}"></div>${s.label}</div>`).join('');
+
+  const ctx = document.getElementById('chart-overview-revenue').getContext('2d');
+  charts['overview-revenue'] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: streams.map(s => ({
+        label: s.label,
+        data: MODEL.map(r => r.rev[s.key] || 0),
+        backgroundColor: s.color + 'cc',
+        borderColor: s.color,
+        borderWidth: 0,
+        stack: 'rev'
+      }))
+    },
+    options: { ...chartDefaults, responsive: true, maintainAspectRatio: false,
+      scales: { ...chartDefaults.scales, x: { ...chartDefaults.scales.x, stacked: true }, y: { ...chartDefaults.scales.y, stacked: true } },
+      plugins: { ...chartDefaults.plugins, legend: { display: false } }
+    }
+  });
+}
+
+function renderAdoptionChart() {
+  destroyChart('adoption');
+  const ctx = document.getElementById('chart-adoption').getContext('2d');
+  charts['adoption'] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: MODEL.map(r => r.shortLabel),
+      datasets: [{
+        label: 'Active Builders',
+        data: MODEL.map(r => r.builders),
+        borderColor: '#f59e0b',
+        backgroundColor: 'rgba(245,158,11,0.1)',
+        fill: true, tension: 0.4, pointRadius: 0,
+      }]
+    },
+    options: { ...chartDefaults, responsive: true, maintainAspectRatio: false,
+      plugins: { ...chartDefaults.plugins, tooltip: { ...chartDefaults.plugins.tooltip,
+        callbacks: { label: ctx => ` Builders: ${ctx.raw.toLocaleString()}` }
+      }},
+      scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y,
+        ticks: { color: '#64748b', font: { size: 10 }, callback: v => v.toLocaleString() }
+      }}
+    }
+  });
+}
+
+function renderPieChart() {
+  destroyChart('pie');
+  const y3 = MODEL.filter(r => r.year === 3);
+  const streams = [
+    { label: 'Subscription',      val: y3.reduce((s,r) => s + r.rev.subscription, 0), color: '#f59e0b' },
+    { label: 'Contracts',          val: y3.reduce((s,r) => s + r.rev.contracts, 0), color: '#fbbf24' },
+    { label: 'Finance — Gtd In',   val: y3.reduce((s,r) => s + r.rev.finGuaranteedIn, 0), color: '#3b82f6' },
+    { label: 'Finance — Early Pay',val: y3.reduce((s,r) => s + r.rev.finEarlyPay, 0), color: '#2563eb' },
+    { label: 'Finance — Float',    val: y3.reduce((s,r) => s + (r.rev.floatIn + r.rev.floatOut), 0), color: '#60a5fa' },
+    { label: 'Finance — Spread',   val: y3.reduce((s,r) => s + r.rev.txnSpread, 0), color: '#93c5fd' },
+    { label: 'Mkt — Gtd Out',      val: y3.reduce((s,r) => s + r.rev.mktGuarOut, 0), color: '#10b981' },
+    { label: 'Mkt — Suppliers',    val: y3.reduce((s,r) => s + r.rev.mktSupplier, 0), color: '#34d399' },
+    { label: 'Mkt — Trades',       val: y3.reduce((s,r) => s + r.rev.mktTrades, 0), color: '#6ee7b7' },
+  ];
+  const ctx = document.getElementById('chart-pie').getContext('2d');
+  charts['pie'] = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: streams.map(s => s.label),
+      datasets: [{ data: streams.map(s => s.val), backgroundColor: streams.map(s => s.color), borderWidth: 0, hoverOffset: 6 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '60%',
+      plugins: {
+        legend: { display: true, position: 'right', labels: { color: '#94a3b8', font: { size: 10 }, boxWidth: 10 } },
+        tooltip: { ...chartDefaults.plugins.tooltip, callbacks: { label: ctx => ` ${ctx.label}: ${fmt(ctx.raw)}` } }
+      }
+    }
+  });
+}
+
+function renderPLOverviewChart() {
+  destroyChart('pl-overview');
+  const ctx = document.getElementById('chart-pl-overview').getContext('2d');
+  charts['pl-overview'] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: MODEL.map(r => r.shortLabel),
+      datasets: [
+        { type: 'bar', label: 'Revenue', data: MODEL.map(r => r.rev.total), backgroundColor: '#10b981aa', borderColor: '#10b981', borderWidth: 0, stack: 'a' },
+        { type: 'bar', label: 'Expenses', data: MODEL.map(r => -r.exp.total), backgroundColor: '#ef444488', borderColor: '#ef4444', borderWidth: 0, stack: 'b' },
+        { type: 'line', label: 'Net Profit', data: MODEL.map(r => r.net), borderColor: '#8b5cf6', backgroundColor: 'transparent', tension: 0.4, pointRadius: 0, borderWidth: 2 }
+      ]
+    },
+    options: { ...chartDefaults, responsive: true, maintainAspectRatio: false,
+      scales: { ...chartDefaults.scales, x: { ...chartDefaults.scales.x }, y: { ...chartDefaults.scales.y, stacked: false } },
+      plugins: { ...chartDefaults.plugins, legend: { display: true, labels: { color: '#94a3b8', font: { size: 11 }, boxWidth: 10 } } }
+    }
+  });
+}
+
+function renderStreamsChart() {
+  destroyChart('streams');
+  const ctx = document.getElementById('chart-streams').getContext('2d');
+  const streamData = [
+    { key: 'subscription', label: 'Subscription', color: '#f59e0b' },
+    { key: 'contracts',    label: 'Contracts',    color: '#fbbf24' },
+    { key: 'finGuaranteedIn', label: 'Finance Gtd', color: '#3b82f6' },
+    { key: 'floatIn',     label: 'Float Income (In)', color: '#60a5fa' },
+    { key: 'floatOut',    label: 'Float Income (Out)', color: '#93c5fd' },
+    { key: 'txnSpread',   label: 'Txn Spread', color: '#bfdbfe' },
+    { key: 'mktGuarOut',  label: 'Mkt Gtd Out', color: '#10b981' },
+    { key: 'mktSupplier', label: 'Mkt Suppliers', color: '#34d399' },
+    { key: 'mktTrades',   label: 'Mkt Trades', color: '#6ee7b7' },
+  ];
+  charts['streams'] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: MODEL.map(r => r.shortLabel),
+      datasets: streamData.map(s => ({
+        label: s.label,
+        data: MODEL.map(r => r.rev[s.key] || 0),
+        borderColor: s.color,
+        backgroundColor: s.color + '22',
+        fill: false, tension: 0.4, pointRadius: 0, borderWidth: 2,
+      }))
+    },
+    options: { ...chartDefaults, responsive: true, maintainAspectRatio: false,
+      plugins: { ...chartDefaults.plugins, legend: { display: true, labels: { color: '#94a3b8', font: { size: 10 }, boxWidth: 10 } } }
+    }
+  });
+}
+
+function renderTiersChart() {
+  destroyChart('tiers');
+  const ctx = document.getElementById('chart-tiers').getContext('2d');
+  charts['tiers'] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: MODEL.map(r => r.shortLabel),
+      datasets: [
+        { label: 'Free', data: MODEL.map(r => {
+            const t = getPhase(r.month) === 1 ? 0.55 : getPhase(r.month) === 2 ? 0.45 : 0.38;
+            return Math.round(r.builders * t);
+          }), backgroundColor: '#64748b88', stack: 't' },
+        { label: 'Basic $49', data: MODEL.map(r => {
+            const t = getPhase(r.month) === 1 ? 0.27 : getPhase(r.month) === 2 ? 0.32 : 0.34;
+            return Math.round(r.builders * t);
+          }), backgroundColor: '#f59e0baa', stack: 't' },
+        { label: 'Pro $99', data: MODEL.map(r => {
+            const t = getPhase(r.month) === 1 ? 0.13 : getPhase(r.month) === 2 ? 0.16 : 0.18;
+            return Math.round(r.builders * t);
+          }), backgroundColor: '#3b82f6aa', stack: 't' },
+        { label: 'Enterprise $299', data: MODEL.map(r => {
+            const t = getPhase(r.month) === 1 ? 0.05 : getPhase(r.month) === 2 ? 0.07 : 0.10;
+            return Math.round(r.builders * t);
+          }), backgroundColor: '#8b5cf6aa', stack: 't' },
+      ]
+    },
+    options: { ...chartDefaults, responsive: true, maintainAspectRatio: false,
+      scales: { ...chartDefaults.scales, x: { ...chartDefaults.scales.x, stacked: true }, y: { ...chartDefaults.scales.y, stacked: true,
+        ticks: { color: '#64748b', font: { size: 10 }, callback: v => v.toLocaleString() }
+      }},
+      plugins: { ...chartDefaults.plugins, legend: { display: true, labels: { color: '#94a3b8', font: { size: 10 }, boxWidth: 10 } } }
+    }
+  });
+}
+
+function renderFinMarketChart() {
+  destroyChart('finmarket');
+  const ctx = document.getElementById('chart-finmarket').getContext('2d');
+  charts['finmarket'] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: MODEL.map(r => r.shortLabel),
+      datasets: [
+        { label: 'Finance Revenue', data: MODEL.map(r => r.rev.finGuaranteedIn + r.rev.finEarlyPay + r.rev.floatIn + r.rev.floatOut + r.rev.txnSpread), borderColor: '#3b82f6', backgroundColor: '#3b82f622', fill: true, tension: 0.4, pointRadius: 0 },
+        { label: 'Marketplace Revenue', data: MODEL.map(r => r.rev.mktGuarOut + r.rev.mktSupplier + r.rev.mktTrades), borderColor: '#10b981', backgroundColor: '#10b98122', fill: true, tension: 0.4, pointRadius: 0 },
+        { label: 'Subscription + Contracts', data: MODEL.map(r => r.rev.subscription + r.rev.contracts), borderColor: '#f59e0b', backgroundColor: '#f59e0b22', fill: true, tension: 0.4, pointRadius: 0 },
+      ]
+    },
+    options: { ...chartDefaults, responsive: true, maintainAspectRatio: false,
+      plugins: { ...chartDefaults.plugins, legend: { display: true, labels: { color: '#94a3b8', font: { size: 10 }, boxWidth: 10 } } }
+    }
+  });
+}
+
+function renderExpensesChart() {
+  destroyChart('expenses');
+  const ctx = document.getElementById('chart-expenses').getContext('2d');
+  charts['expenses'] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: MODEL.map(r => r.shortLabel),
+      datasets: [
+        { label: 'Salaries', data: MODEL.map(r => r.exp.salaries), backgroundColor: '#ef4444aa', stack: 'e' },
+        { label: 'Marketing', data: MODEL.map(r => r.exp.marketing), backgroundColor: '#f97316aa', stack: 'e' },
+        { label: 'Cloud / Infra', data: MODEL.map(r => r.exp.cloud), backgroundColor: '#06b6d4aa', stack: 'e' },
+        { label: 'Legal', data: MODEL.map(r => r.exp.legal), backgroundColor: '#8b5cf6aa', stack: 'e' },
+        { label: 'Other Ops', data: MODEL.map(r => r.exp.office + r.exp.software + r.exp.insurance + r.exp.accounting + r.exp.travel + r.exp.support + r.exp.misc), backgroundColor: '#64748baa', stack: 'e' },
+      ]
+    },
+    options: { ...chartDefaults, responsive: true, maintainAspectRatio: false,
+      scales: { ...chartDefaults.scales, x: { ...chartDefaults.scales.x, stacked: true }, y: { ...chartDefaults.scales.y, stacked: true } },
+      plugins: { ...chartDefaults.plugins, legend: { display: true, labels: { color: '#94a3b8', font: { size: 10 }, boxWidth: 10 } } }
+    }
+  });
+}
+
+function renderHeadcountChart() {
+  destroyChart('headcount');
+  const ctx = document.getElementById('chart-headcount').getContext('2d');
+  function getHeadcount(m) {
+    let hc = 12; // founding 10 + 2 extra initial
+    if (m >= 4)  hc += 2;
+    if (m >= 7)  hc += 2;
+    if (m >= 10) hc += 1;
+    if (m >= 13) hc += 3;
+    if (m >= 16) hc += 1;
+    if (m >= 19) hc += 3;
+    if (m >= 22) hc += 2;
+    if (m >= 25) hc += 6;
+    if (m >= 28) hc += 2;
+    if (m >= 31) hc += 4;
+    if (m >= 34) hc += 2;
+    return hc;
+  }
+  charts['headcount'] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: MODEL.map(r => r.shortLabel),
+      datasets: [{
+        label: 'Team Headcount (FTE)',
+        data: MODEL.map(r => getHeadcount(r.month)),
+        borderColor: '#f59e0b',
+        backgroundColor: 'rgba(245,158,11,0.1)',
+        fill: true, stepped: true, pointRadius: 4,
+      }]
+    },
+    options: { ...chartDefaults, responsive: true, maintainAspectRatio: false,
+      plugins: { ...chartDefaults.plugins, tooltip: { ...chartDefaults.plugins.tooltip,
+        callbacks: { label: ctx => ` Headcount: ${ctx.raw} FTE` }
+      }},
+      scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, ticks: { color: '#64748b', font: { size: 10 }, callback: v => v + ' FTE' } } }
+    }
+  });
+}
+
+function renderExpensePieChart() {
+  destroyChart('expense-pie');
+  const y3 = MODEL.filter(r => r.year === 3);
+  const cats = [
+    { label: 'Salaries', val: y3.reduce((s,r) => s + r.exp.salaries, 0), color: '#ef4444' },
+    { label: 'Marketing', val: y3.reduce((s,r) => s + r.exp.marketing, 0), color: '#f97316' },
+    { label: 'Cloud/Infra', val: y3.reduce((s,r) => s + r.exp.cloud, 0), color: '#06b6d4' },
+    { label: 'Legal', val: y3.reduce((s,r) => s + r.exp.legal, 0), color: '#8b5cf6' },
+    { label: 'Office', val: y3.reduce((s,r) => s + r.exp.office, 0), color: '#64748b' },
+    { label: 'Software', val: y3.reduce((s,r) => s + r.exp.software, 0), color: '#22d3ee' },
+    { label: 'Insurance', val: y3.reduce((s,r) => s + r.exp.insurance, 0), color: '#a78bfa' },
+    { label: 'Accounting', val: y3.reduce((s,r) => s + r.exp.accounting, 0), color: '#34d399' },
+    { label: 'Support', val: y3.reduce((s,r) => s + r.exp.support, 0), color: '#fbbf24' },
+    { label: 'Other', val: y3.reduce((s,r) => s + r.exp.travel + r.exp.misc, 0), color: '#94a3b8' },
+  ];
+  const ctx = document.getElementById('chart-expense-pie').getContext('2d');
+  charts['expense-pie'] = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: cats.map(c => c.label),
+      datasets: [{ data: cats.map(c => c.val), backgroundColor: cats.map(c => c.color), borderWidth: 0, hoverOffset: 6 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '60%',
+      plugins: {
+        legend: { display: true, position: 'right', labels: { color: '#94a3b8', font: { size: 10 }, boxWidth: 10 } },
+        tooltip: { ...chartDefaults.plugins.tooltip, callbacks: { label: ctx => ` ${ctx.label}: ${fmt(ctx.raw)}` } }
+      }
+    }
+  });
+}
+
+function renderCashCharts() {
+  destroyChart('cashcumul');
+  destroyChart('cashmonthly');
+  let cumulative = 0;
+  const cumData = MODEL.map(r => { cumulative += r.net; return cumulative; });
+
+  const ctx1 = document.getElementById('chart-cashcumul').getContext('2d');
+  charts['cashcumul'] = new Chart(ctx1, {
+    type: 'line',
+    data: {
+      labels: MODEL.map(r => r.shortLabel),
+      datasets: [{
+        label: 'Cumulative Cash Position',
+        data: cumData,
+        borderColor: cumData[cumData.length-1] >= 0 ? '#10b981' : '#ef4444',
+        backgroundColor: ctx => {
+          const gradient = ctx.chart.ctx.createLinearGradient(0, 0, 0, 400);
+          gradient.addColorStop(0, 'rgba(16,185,129,0.3)');
+          gradient.addColorStop(1, 'rgba(239,68,68,0.05)');
+          return gradient;
+        },
+        fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2,
+        segment: {
+          borderColor: ctx => cumData[ctx.p1DataIndex] < 0 ? '#ef4444' : '#10b981',
+        }
+      }]
+    },
+    options: { ...chartDefaults, responsive: true, maintainAspectRatio: false,
+      plugins: { ...chartDefaults.plugins,
+        annotation: {},
+        tooltip: { ...chartDefaults.plugins.tooltip, callbacks: { label: ctx => ` Cash: ${fmt(ctx.raw)}` }}
+      }
+    }
+  });
+
+  const ctx2 = document.getElementById('chart-cashmonthly').getContext('2d');
+  charts['cashmonthly'] = new Chart(ctx2, {
+    type: 'bar',
+    data: {
+      labels: MODEL.map(r => r.shortLabel),
+      datasets: [{
+        label: 'Monthly Net Cash',
+        data: MODEL.map(r => r.net),
+        backgroundColor: MODEL.map(r => r.net >= 0 ? '#10b981cc' : '#ef4444cc'),
+        borderColor: MODEL.map(r => r.net >= 0 ? '#10b981' : '#ef4444'),
+        borderWidth: 1,
+      }]
+    },
+    options: { ...chartDefaults, responsive: true, maintainAspectRatio: false }
+  });
+}
+
+function renderDataRevenueChart() {
+  destroyChart('data-revenue');
+  const ctx = document.getElementById('chart-data-revenue').getContext('2d');
+  const scenarios = ['Conservative', 'Moderate', 'Optimistic'];
+  const y1 = [0, 200000, 500000];
+  const y2 = [500000, 3000000, 8000000];
+  const y3 = [2000000, 15000000, 50000000];
+  charts['data-revenue'] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: scenarios,
+      datasets: [
+        { label: 'Year 1 (2026)', data: y1, backgroundColor: '#10b98188' },
+        { label: 'Year 2 (2027)', data: y2, backgroundColor: '#3b82f688' },
+        { label: 'Year 3 (2028)', data: y3, backgroundColor: '#f59e0b88' },
+      ]
+    },
+    options: { ...chartDefaults, responsive: true, maintainAspectRatio: false,
+      plugins: { ...chartDefaults.plugins, legend: { display: true, labels: { color: '#94a3b8', font: { size: 11 }, boxWidth: 10 } } },
+      scales: { ...chartDefaults.scales, x: { ...chartDefaults.scales.x, stacked: false }, y: { ...chartDefaults.scales.y } }
+    }
+  });
+}
+
+// ─── Per-builder table ───
+function renderPerBuilderTable() {
+  const tbody = document.getElementById('tbody-perbuilder');
+  const r1 = builderRevenue(3);  // Phase 1
+  const r2 = builderRevenue(12); // Phase 2
+  const r3 = builderRevenue(30); // Phase 3
+
+  const rows = [
+    ['Subscription', r1.subscription, r2.subscription, r3.subscription],
+    ['Contracts (Free Tier)', r1.contracts, r2.contracts, r3.contracts],
+    ['Finance — Guaranteed In (0.3%)', r1.finGuaranteedIn, r2.finGuaranteedIn, r3.finGuaranteedIn],
+    ['Finance — Early Payment (0.07%)', r1.finEarlyPay, r2.finEarlyPay, r3.finEarlyPay],
+    ['Finance — Float Income (Incoming)', r1.floatIn, r2.floatIn, r3.floatIn],
+    ['Finance — Float Income (Outgoing)', r1.floatOut, r2.floatOut, r3.floatOut],
+    ['Finance — Txn Account Spread (1.5%)', r1.txnSpread, r2.txnSpread, r3.txnSpread],
+    ['Marketplace — Guaranteed Out (0.3%)', r1.mktGuarOut, r2.mktGuarOut, r3.mktGuarOut],
+    ['Marketplace — Supplier Engagement (4%)', r1.mktSupplier, r2.mktSupplier, r3.mktSupplier],
+    ['Marketplace — Trades Engagement (2%)', r1.mktTrades, r2.mktTrades, r3.mktTrades],
+  ];
+  tbody.innerHTML = rows.map(([name, v1, v2, v3]) =>
+    `<tr><td>${name}</td><td>$${v1.toFixed(0)}</td><td>$${v2.toFixed(0)}</td><td>$${v3.toFixed(0)}</td><td>$${(v3*12).toFixed(0)}</td></tr>`
+  ).join('') +
+  `<tr class="total-row"><td>TOTAL per builder/month</td><td>$${r1.total.toFixed(0)}</td><td>$${r2.total.toFixed(0)}</td><td>$${r3.total.toFixed(0)}</td><td>$${(r3.total*12).toFixed(0)}</td></tr>`;
+}
+
+// ─── Annual revenue summary ───
+function renderAnnualRevTable() {
+  const streams = [
+    { key: 'subscription', label: 'Subscription Revenue' },
+    { key: 'contracts',    label: 'Contract Fees' },
+    { key: 'finGuaranteedIn', label: 'Finance — Guaranteed In (0.3%)' },
+    { key: 'finEarlyPay', label: 'Finance — Early Payment (0.07%)' },
+    { key: 'floatIn',     label: 'Finance — Float Income (Incoming)' },
+    { key: 'floatOut',    label: 'Finance — Float Income (Outgoing)' },
+    { key: 'txnSpread',   label: 'Finance — Txn Account Spread (1.5%)' },
+    { key: 'mktGuarOut',  label: 'Marketplace — Guaranteed Out (0.3%)' },
+    { key: 'mktSupplier', label: 'Marketplace — Supplier Fees (4%)' },
+    { key: 'mktTrades',   label: 'Marketplace — Trades Fees (2%)' },
+  ];
+
+  let html = '';
+  const groups = [
+    { label: '📋 Subscription & Contracts', keys: ['subscription','contracts'] },
+    { label: '💰 Finance Revenue', keys: ['finGuaranteedIn','finEarlyPay','floatIn','floatOut','txnSpread'] },
+    { label: '🛒 Marketplace Revenue', keys: ['mktGuarOut','mktSupplier','mktTrades'] },
+  ];
+  let totY1=0, totY2=0, totY3=0;
+
+  groups.forEach(g => {
+    html += `<tr><td colspan="5" style="color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.8px;padding-top:12px;padding-bottom:4px">${g.label}</td></tr>`;
+    let gY1=0, gY2=0, gY3=0;
+    g.keys.forEach(k => {
+      const s = streams.find(s => s.key === k);
+      const y1v = sumRevYear(k, 1), y2v = sumRevYear(k, 2), y3v = sumRevYear(k, 3);
+      gY1 += y1v; gY2 += y2v; gY3 += y3v;
+      totY1 += y1v; totY2 += y2v; totY3 += y3v;
+      html += `<tr><td style="padding-left:16px">${s.label}</td><td>${fmt(y1v,1)}</td><td>${fmt(y2v,1)}</td><td>${fmt(y3v,1)}</td><td>${fmt(y1v+y2v+y3v,1)}</td></tr>`;
+    });
+    html += `<tr class="subtotal"><td style="padding-left:8px">Subtotal</td><td>${fmt(gY1,1)}</td><td>${fmt(gY2,1)}</td><td>${fmt(gY3,1)}</td><td>${fmt(gY1+gY2+gY3,1)}</td></tr>`;
+  });
+  html += `<tr class="total-row"><td>TOTAL REVENUE</td><td>${fmt(totY1,1)}</td><td>${fmt(totY2,1)}</td><td>${fmt(totY3,1)}</td><td>${fmt(totY1+totY2+totY3,1)}</td></tr>`;
+  document.getElementById('tbody-annual-rev').innerHTML = html;
+}
+
+// ─── Expenses table ───
+function renderExpensesTable() {
+  const cats = [
+    { key: 'salaries', label: '👥 Team Salaries' },
+    { key: 'marketing', label: '📢 Marketing & Ads' },
+    { key: 'cloud', label: '☁️ Cloud / Infrastructure' },
+    { key: 'legal', label: '⚖️ Legal & Compliance' },
+    { key: 'office', label: '🏢 Office & Facilities' },
+    { key: 'software', label: '💻 Software & Tools' },
+    { key: 'insurance', label: '🛡️ Insurance' },
+    { key: 'accounting', label: '📒 Accounting & Finance' },
+    { key: 'travel', label: '✈️ Travel & BD' },
+    { key: 'support', label: '🎧 Customer Support' },
+    { key: 'misc', label: '📦 Miscellaneous' },
+  ];
+  let html = '', totY1=0, totY2=0, totY3=0;
+  cats.forEach(c => {
+    const y1v = sumExpYear(c.key, 1), y2v = sumExpYear(c.key, 2), y3v = sumExpYear(c.key, 3);
+    totY1 += y1v; totY2 += y2v; totY3 += y3v;
+    html += `<tr><td>${c.label}</td><td>${fmt(y1v,1)}</td><td>${fmt(y2v,1)}</td><td>${fmt(y3v,1)}</td><td>${fmt(y1v+y2v+y3v,1)}</td></tr>`;
+  });
+  html += `<tr class="total-row"><td>TOTAL EXPENSES</td><td>${fmt(totY1,1)}</td><td>${fmt(totY2,1)}</td><td>${fmt(totY3,1)}</td><td>${fmt(totY1+totY2+totY3,1)}</td></tr>`;
+  document.getElementById('tbody-expenses').innerHTML = html;
+}
+
+// ─── Cash flow quarterly ───
+function renderCashflowTable() {
+  let cumulative = 0;
+  let html = '';
+  const quarters = [];
+  for (let q = 0; q < 12; q++) {
+    const startM = q * 3 + 1, endM = startM + 2;
+    const rows = MODEL.filter(r => r.month >= startM && r.month <= endM);
+    const rev = rows.reduce((s,r) => s + r.rev.total, 0);
+    const exp = rows.reduce((s,r) => s + r.exp.total, 0);
+    const net = rev - exp;
+    cumulative += net;
+    const yr = Math.floor(q/4) + 1;
+    const qn = (q % 4) + 1;
+    const yearLabel = 2025 + yr;
+    html += `<tr>
+      <td>Q${qn} ${yearLabel}</td>
+      <td class="pos">${fmt(rev,1)}</td>
+      <td class="neg">${fmt(exp,1)}</td>
+      <td class="${net>=0?'pos':'neg'}">${fmt(net,1)}</td>
+      <td class="${cumulative>=0?'pos':'neg'}">${fmt(cumulative,1)}</td>
+    </tr>`;
+  }
+  document.getElementById('tbody-cashflow').innerHTML = html;
+}
+
+// ─── P&L detail table ───
+let plYear = 0;
+function setPLYear(y) {
+  plYear = y;
+  document.querySelectorAll('.yr-btn').forEach((b,i) => b.classList.toggle('active', i === y));
+  renderPLTable();
+}
+function renderPLTable() {
+  const rows = plYear === 0 ? MODEL : MODEL.filter(r => r.year === plYear);
+  const header = document.getElementById('pl-header');
+  header.innerHTML = `<th>Line Item</th>` + rows.map(r => `<th>${r.shortLabel}</th>`).join('');
+
+  const streams = [
+    { key: 'subscription', label: 'Subscription' },
+    { key: 'contracts',    label: 'Contracts' },
+    { key: 'finGuaranteedIn', label: 'Fin — Gtd In' },
+    { key: 'finEarlyPay', label: 'Fin — Early Pay' },
+    { key: 'floatIn',     label: 'Float In' },
+    { key: 'floatOut',    label: 'Float Out' },
+    { key: 'txnSpread',   label: 'Txn Spread' },
+    { key: 'mktGuarOut',  label: 'Mkt — Gtd Out' },
+    { key: 'mktSupplier', label: 'Mkt — Suppliers' },
+    { key: 'mktTrades',   label: 'Mkt — Trades' },
+  ];
+
+  let html = '';
+  html += `<tr style="color:var(--gold);font-size:10px"><td>— REVENUE —</td>${rows.map(()=>'<td></td>').join('')}</tr>`;
+  streams.forEach(s => {
+    html += `<tr><td style="padding-left:12px">${s.label}</td>${rows.map(r => `<td>${fmt(r.rev[s.key]||0)}</td>`).join('')}</tr>`;
+  });
+  html += `<tr class="subtotal"><td>Total Revenue</td>${rows.map(r => `<td class="pos">${fmt(r.rev.total)}</td>`).join('')}</tr>`;
+  html += `<tr style="color:var(--red);font-size:10px;padding-top:8px"><td>— EXPENSES —</td>${rows.map(()=>'<td></td>').join('')}</tr>`;
+  html += `<tr><td style="padding-left:12px">Salaries</td>${rows.map(r => `<td>${fmt(r.exp.salaries)}</td>`).join('')}</tr>`;
+  html += `<tr><td style="padding-left:12px">Marketing</td>${rows.map(r => `<td>${fmt(r.exp.marketing)}</td>`).join('')}</tr>`;
+  html += `<tr><td style="padding-left:12px">Cloud/Infra</td>${rows.map(r => `<td>${fmt(r.exp.cloud)}</td>`).join('')}</tr>`;
+  html += `<tr><td style="padding-left:12px">Legal</td>${rows.map(r => `<td>${fmt(r.exp.legal)}</td>`).join('')}</tr>`;
+  html += `<tr><td style="padding-left:12px">Other Ops</td>${rows.map(r => `<td>${fmt(r.exp.office+r.exp.software+r.exp.insurance+r.exp.accounting+r.exp.travel+r.exp.support+r.exp.misc)}</td>`).join('')}</tr>`;
+  html += `<tr class="subtotal"><td>Total Expenses</td>${rows.map(r => `<td class="neg">${fmt(r.exp.total)}</td>`).join('')}</tr>`;
+  html += `<tr class="total-row"><td>NET PROFIT / (LOSS)</td>${rows.map(r => `<td class="${r.net>=0?'pos':'neg'}">${fmt(r.net)}</td>`).join('')}</tr>`;
+  html += `<tr><td style="padding-left:12px;color:var(--sub)">Active Builders</td>${rows.map(r => `<td style="color:var(--muted)">${r.builders.toLocaleString()}</td>`).join('')}</tr>`;
+
+  document.getElementById('tbody-pl').innerHTML = html;
+}
+
+// ─── KPI updates ───
+function updateKPIs() {
+  const y1Rev = MODEL.filter(r => r.year === 1).reduce((s,r) => s + r.rev.total, 0);
+  const y2Rev = MODEL.filter(r => r.year === 2).reduce((s,r) => s + r.rev.total, 0);
+  const y3Rev = MODEL.filter(r => r.year === 3).reduce((s,r) => s + r.rev.total, 0);
+  const y3Exp = MODEL.filter(r => r.year === 3).reduce((s,r) => s + r.exp.total, 0);
+  const y3Net = y3Rev - y3Exp;
+  const y3Margin = y3Rev > 0 ? (y3Net / y3Rev * 100) : 0;
+
+  const lastMonth = MODEL[35];
+  const arr = lastMonth.rev.total * 12;
+
+  // Break-even
+  let cumulative = 0, beMonth = null;
+  for (let i = 0; i < MODEL.length; i++) {
+    cumulative += MODEL[i].net;
+    if (!beMonth && MODEL[i].net >= 0) {
+      beMonth = MODEL[i].label;
+    }
+  }
+  const totalCapital = Math.min(0, ...MODEL.map((_, i) => {
+    return MODEL.slice(0, i + 1).reduce((s, r) => s + r.net, 0);
+  }));
+
+  const perBuilder = builderRevenue(30).total;
+
+  document.getElementById('kpi-y1rev').textContent = fmt(y1Rev, 1);
+  document.getElementById('kpi-y2rev').textContent = fmt(y2Rev, 1);
+  document.getElementById('kpi-y3rev').textContent = fmt(y3Rev, 1);
+  document.getElementById('kpi-perbuilder').textContent = fmt(perBuilder, 0) + '/mo';
+  document.getElementById('kpi-capital').textContent = totalCapital < 0 ? fmt(Math.abs(totalCapital), 1) : '$0';
+  document.getElementById('kpi-margin').textContent = y3Margin >= 0 ? '+' + y3Margin.toFixed(0) + '%' : y3Margin.toFixed(0) + '%';
+  document.getElementById('kpi-margin').className = 'kpi-value ' + (y3Margin >= 0 ? 'up' : 'down');
+
+  // Adoption stats
+  const maxBuilders = MODEL[35].builders;
+  document.getElementById('stat-builders').textContent = maxBuilders.toLocaleString();
+  document.getElementById('stat-arr').textContent = fmt(arr, 1);
+  document.getElementById('stat-rev3').textContent = fmt(y1Rev + y2Rev + y3Rev, 1);
+  document.getElementById('stat-breakeven').textContent = beMonth || 'Post Y3';
+}
+
+// ─── Tab switching ───
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ─── Slider ───
+const slider = document.getElementById('adoptionSlider');
+slider.addEventListener('input', () => {
+  const val = parseFloat(slider.value);
+  const pct = (val - 1) / (40 - 1) * 100;
+  slider.style.setProperty('--pct', pct + '%');
+  document.getElementById('pctBadge').textContent = val.toFixed(1) + '%';
+  rebuildModel(val);
+  updateKPIs();
+  renderAllCharts();
+});
+
+function renderAllCharts() {
+  renderOverviewRevChart();
+  renderAdoptionChart();
+  renderPieChart();
+  renderPLOverviewChart();
+  renderStreamsChart();
+  renderTiersChart();
+  renderFinMarketChart();
+  renderExpensesChart();
+  renderHeadcountChart();
+  renderExpensePieChart();
+  renderCashCharts();
+  renderDataRevenueChart();
+  renderPerBuilderTable();
+  renderAnnualRevTable();
+  renderExpensesTable();
+  renderCashflowTable();
+  renderPLTable();
+}
+
+// ════════════════════════════════════════════════
+// INTERACTIVE ASSUMPTIONS ENGINE
+// ════════════════════════════════════════════════
+
+// ─── Slider handler ───
+function onSl(id, el, assumpKey, multiplier, fmtFn) {
+  const v = parseFloat(el.value);
+  const mn=parseFloat(el.min), mx=parseFloat(el.max);
+  el.style.setProperty('--sp', ((v-mn)/(mx-mn)*100)+'%');
+  const av = document.getElementById('av-'+id);
+  if(av) av.textContent = fmtFn(v);
+  A[assumpKey] = v * multiplier;
+  // special: update trades display
+  if(assumpKey==='supplierShare') {
+    const td = document.getElementById('trades-share-display');
+    if(td) td.textContent = (100-v).toFixed(0)+'%';
+  }
+  markChanged(id, assumpKey);
+  scheduleRebuild();
+}
+
+// ─── Number input handler ───
+function onNum(assumpKey, val, id) {
+  A[assumpKey] = parseFloat(val)||0;
+  if(id) markChanged(id, assumpKey);
+  scheduleRebuild();
+}
+
+// ─── Toggle handler ───
+function onTog(assumpKey, checked, bodyId) {
+  A[assumpKey] = checked;
+  if(bodyId) {
+    const el = document.getElementById(bodyId);
+    if(el) el.closest('.asec')?.classList.toggle('sec-disabled', !checked);
+  }
+  scheduleRebuild();
+}
+
+// ─── Tier distribution handler ───
+function onTier(phase, idx, val) {
+  const key = 'tierPh'+phase;
+  const arr = [...A[key]]; arr[idx] = (parseFloat(val)||0)/100; A[key]=arr;
+  const total = arr.reduce((s,v)=>s+v,0);
+  const el = document.getElementById('tier-total-'+phase);
+  if(el){
+    const ok = Math.abs(total-1)<0.015;
+    el.textContent = 'Total: '+(total*100).toFixed(0)+'% '+(ok?'✓':'⚠ must = 100%');
+    el.className = 'tier-total '+(ok?'tier-ok':'tier-warn');
+  }
+  scheduleRebuild();
+}
+
+// ─── Mark changed dot ───
+function markChanged(id, assumpKey) {
+  const dot = document.getElementById('cd-'+id);
+  const d=DEFAULTS[assumpKey], c=A[assumpKey];
+  const changed = Array.isArray(d)?JSON.stringify(d)!==JSON.stringify(c):Math.abs(d-c)>1e-9;
+  if(dot) dot.classList.toggle('on', changed);
+  updateChangeBadge();
+}
+
+// ─── Changes badge ───
+function updateChangeBadge() {
+  const n = Object.keys(DEFAULTS).filter(k=>{
+    const d=DEFAULTS[k],c=A[k];
+    return Array.isArray(d)?JSON.stringify(d)!==JSON.stringify(c):Math.abs(d-(c||0))>1e-9;
+  }).length;
+  const badge=document.getElementById('changes-badge');
+  if(badge){badge.textContent=n+(n===1?' change':' changes');badge.classList.toggle('visible',n>0);}
+}
+
+// ─── Debounced rebuild ───
+let _rt=null;
+function scheduleRebuild() {
+  clearTimeout(_rt);
+  _rt = setTimeout(()=>{
+    const pct = parseFloat(document.getElementById('adoptionSlider').value);
+    rebuildModel(pct); updateKPIs(); renderAllCharts();
+    updateLiveSummary(); renderValuation();
+  }, 150);
+}
+
+// ─── Live summary panel ───
+function updateLiveSummary() {
+  const r = builderRevenue(30);
+  const items=[
+    {id:'als-sub',   val:r.subscription},
+    {id:'als-contracts',val:r.contracts},
+    {id:'als-fin',   val:r.finGuaranteedIn+r.finEarlyPay+r.floatIn+r.floatOut+r.txnSpread},
+    {id:'als-mkt',   val:r.mktGuarOut+r.mktSupplier+r.mktTrades},
+    {id:'als-total', val:r.total},
+    {id:'als-annual',val:r.total*12},
+  ];
+  items.forEach(it=>{
+    const el=document.getElementById(it.id);
+    if(el){const v=it.val;el.querySelector('.als-val').textContent='$'+(v>=1e6?(v/1e6).toFixed(1)+'M':v>=1000?(v/1000).toFixed(1)+'K':v.toFixed(0));}
+  });
+}
+
+// ─── Salary base total ───
+function updateSalTotal() {
+  const t=A.salFounders+A.salTech+A.salMarketing+A.salContent+A.salCompliance+A.salSales;
+  const el=document.getElementById('sal-base-total');
+  if(el) el.textContent='$'+t.toLocaleString()+'/mo';
+}
+
+// ─── Reset all ───
+function resetAll() {
+  Object.keys(DEFAULTS).forEach(k=>{ A[k]=Array.isArray(DEFAULTS[k])?[...DEFAULTS[k]]:DEFAULTS[k]; });
+  syncAllControls(); updateChangeBadge();
+  scheduleRebuild();
+}
+
+// ─── Sync all controls to A ───
+function syncAllControls() {
+  const sliders=[
+    ['projectsPerYear','projectsPerYear',1,v=>v.toFixed(0)+' projects'],
+    ['builderPayDays','builderPayDays',1,v=>v.toFixed(0)+' days'],
+    ['outsourceRate','outsourceRate',0.01,v=>v.toFixed(0)+'%'],
+    ['supplierShare','supplierShare',0.01,v=>v.toFixed(0)+'%'],
+    ['subPayDays','subPayDays',1,v=>v.toFixed(0)+' days'],
+    ['finGtdRate','finGtdRate',0.01,v=>v.toFixed(2)+'%'],
+    ['finGtdAdoptStart','finGtdAdoptStart',0.01,v=>v.toFixed(0)+'%'],
+    ['finGtdAdoptEnd','finGtdAdoptEnd',0.01,v=>v.toFixed(0)+'%'],
+    ['finEarlyRate','finEarlyRate',0.01,v=>v.toFixed(3)+'%'],
+    ['finEarlyAdoptStart','finEarlyAdoptStart',0.01,v=>v.toFixed(0)+'%'],
+    ['finEarlyAdoptEnd','finEarlyAdoptEnd',0.01,v=>v.toFixed(0)+'%'],
+    ['floatRatePA','floatRatePA',0.01,v=>v.toFixed(2)+'%PA'],
+    ['txnSpreadRatePA','txnSpreadRatePA',0.01,v=>v.toFixed(2)+'%PA'],
+    ['mktGtdOutRate','mktGtdOutRate',0.01,v=>v.toFixed(2)+'%'],
+    ['mktGtdOutAdoptStart','mktGtdOutAdoptStart',0.01,v=>v.toFixed(0)+'%'],
+    ['mktGtdOutAdoptEnd','mktGtdOutAdoptEnd',0.01,v=>v.toFixed(0)+'%'],
+    ['mktSupplierRate','mktSupplierRate',0.01,v=>v.toFixed(1)+'%'],
+    ['mktSupplierAdoptStart','mktSupplierAdoptStart',0.01,v=>v.toFixed(0)+'%'],
+    ['mktSupplierAdoptEnd','mktSupplierAdoptEnd',0.01,v=>v.toFixed(0)+'%'],
+    ['mktTradesRate','mktTradesRate',0.01,v=>v.toFixed(1)+'%'],
+    ['mktTradesAdoptStart','mktTradesAdoptStart',0.01,v=>v.toFixed(0)+'%'],
+    ['mktTradesAdoptEnd','mktTradesAdoptEnd',0.01,v=>v.toFixed(0)+'%'],
+  ];
+  sliders.forEach(([id,key,mult,fmtFn])=>{
+    const sl=document.getElementById('sl-'+id); if(!sl) return;
+    const v=A[key]/mult; sl.value=v;
+    const mn=parseFloat(sl.min),mx=parseFloat(sl.max);
+    sl.style.setProperty('--sp',((v-mn)/(mx-mn)*100)+'%');
+    const av=document.getElementById('av-'+id); if(av) av.textContent=fmtFn(v);
+  });
+  const nums=['totalBuilders','projectValue','priceBasic','pricePro','priceEnterprise','contractFee',
+    'txnAvgBalance','salFounders','salTech','salMarketing','salContent','salCompliance','salSales',
+    'cloudStart','cloudEnd','mktgStart','mktgEnd','legalStart','legalEnd','officeStart','officeEnd',
+    'softwareStart','softwareEnd','insuranceStart','insuranceEnd','accountingStart','accountingEnd',
+    'travelStart','travelEnd','supportStart','supportEnd','miscStart','miscEnd'];
+  nums.forEach(k=>{ const el=document.getElementById('num-'+k); if(el) el.value=A[k]; });
+  ['subEnabled','contractsEnabled','finGtdEnabled','finEarlyEnabled','finFloatEnabled','finSpreadEnabled','mktEnabled'].forEach(k=>{
+    const el=document.getElementById('tog-'+k); if(el) el.checked=A[k];
+  });
+  [1,3].forEach(ph=>{
+    const key='tierPh'+ph;
+    ['free','basic','pro','ent'].forEach((t,i)=>{
+      const el=document.getElementById('tier-'+ph+'-'+t); if(el) el.value=Math.round(A[key][i]*100);
+    });
+    const tot=A[key].reduce((s,v)=>s+v,0);
+    const tel=document.getElementById('tier-total-'+ph);
+    if(tel){tel.textContent='Total: '+(tot*100).toFixed(0)+'% '+(Math.abs(tot-1)<0.015?'✓':'⚠');
+      tel.className='tier-total '+(Math.abs(tot-1)<0.015?'tier-ok':'tier-warn');}
+  });
+  const td=document.getElementById('trades-share-display');
+  if(td) td.textContent=((1-A.supplierShare)*100).toFixed(0)+'%';
+  document.querySelectorAll('.cdot').forEach(d=>d.classList.remove('on'));
+  updateSalTotal();
+}
+
+// ════════════════════════════════════════════════
+// VALUATION PREDICTOR
+// ════════════════════════════════════════════════
+let currentMult = 20;
+
+function onMultSlider(el) {
+  currentMult = parseFloat(el.value);
+  const mn=parseFloat(el.min),mx=parseFloat(el.max);
+  el.style.setProperty('--sp',((currentMult-mn)/(mx-mn)*100)+'%');
+  document.getElementById('mult-badge').textContent = currentMult+'×';
+  renderValuation();
+}
+
+function renderValuation() {
+  if(!MODEL.length) return;
+  const lastMonth = MODEL[35];
+  const arr = lastMonth.rev.total * 12;
+  const enterprise = arr * currentMult;
+  const cumRev = MODEL.reduce((s,r)=>s+r.rev.total,0);
+  const y3Rev = MODEL.filter(r=>r.year===3).reduce((s,r)=>s+r.rev.total,0);
+  const y3Exp = MODEL.filter(r=>r.year===3).reduce((s,r)=>s+r.exp.total,0);
+  const ebitda = y3Rev - y3Exp;
+  const ebitdaVal = ebitda > 0 ? ebitda * 15 : 0;
+  const perBuilder = lastMonth.builders > 0 ? (arr / lastMonth.builders) : 0;
+
+  const fv = n => {
+    const abs=Math.abs(n);
+    const s=n<0?'-':'';
+    if(abs>=1e9) return s+'$'+(abs/1e9).toFixed(2)+'B';
+    if(abs>=1e6) return s+'$'+(abs/1e6).toFixed(1)+'M';
+    return s+'$'+(abs/1000).toFixed(0)+'K';
+  };
+
+  document.getElementById('val-enterprise').textContent = fv(enterprise);
+  document.getElementById('val-enterprise-sub').textContent = 'Based on Month 36 ARR × '+currentMult+'×';
+  document.getElementById('val-arr').textContent = fv(arr);
+  document.getElementById('val-cumrev').textContent = fv(cumRev);
+  document.getElementById('val-ebitda').textContent = ebitdaVal > 0 ? fv(ebitdaVal) : 'Pre-profit';
+  document.getElementById('val-per-builder').textContent = fv(perBuilder);
+  document.getElementById('val-builders').textContent = lastMonth.builders.toLocaleString();
+
+  // Scenario table
+  const scenarios = [
+    {name:'Distressed / Asset Sale', mult:2, color:'#ef4444'},
+    {name:'Early Stage / Seed Round', mult:5, color:'#f97316'},
+    {name:'Series A Growth', mult:10, color:'#eab308'},
+    {name:'Series B Scale', mult:15, color:'#3b82f6'},
+    {name:'Baseline Target (20×)', mult:20, color:'#f59e0b'},
+    {name:'Premium Growth (25×)', mult:25, color:'#10b981'},
+    {name:'High-Growth SaaS (30×)', mult:30, color:'#8b5cf6'},
+    {name:'Peak Market (40×)', mult:40, color:'#06b6d4'},
+  ];
+  let tbl = '';
+  scenarios.forEach(s=>{
+    const val=arr*s.mult;
+    const isActive=Math.abs(s.mult-currentMult)<2.5;
+    tbl+=`<div class="scenario-row${isActive?' active-row':''}">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:10px;height:10px;border-radius:50%;background:${s.color};flex-shrink:0"></div>
+        <span class="scenario-name">${s.name}</span>
+      </div>
+      <span class="scenario-mult">${s.mult}× ARR</span>
+      <span class="scenario-val" style="color:${s.color}">${fv(val)}</span>
+    </div>`;
+  });
+  document.getElementById('scenario-table').innerHTML = tbl;
+
+  // Valuation chart
+  destroyChart('valuation');
+  const ctx=document.getElementById('chart-valuation').getContext('2d');
+  charts['valuation'] = new Chart(ctx,{
+    type:'line',
+    data:{
+      labels:MODEL.map(r=>r.shortLabel),
+      datasets:[
+        {label:`Enterprise Value (${currentMult}× ARR)`,
+          data:MODEL.map(r=>r.rev.total*12*currentMult),
+          borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.08)',fill:true,tension:0.4,pointRadius:0,borderWidth:2},
+        {label:'ARR (Monthly × 12)',
+          data:MODEL.map(r=>r.rev.total*12),
+          borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.05)',fill:true,tension:0.4,pointRadius:0,borderWidth:1.5,borderDash:[4,3]},
+      ]
+    },
+    options:{...chartDefaults,responsive:true,maintainAspectRatio:false,
+      plugins:{...chartDefaults.plugins,legend:{display:true,labels:{color:'#94a3b8',font:{size:11},boxWidth:10}}}}
+  });
+}
+
+// ─── Init ───
+const initPct = 10;
+slider.value = initPct;
+slider.style.setProperty('--pct', ((initPct - 1) / 39 * 100) + '%');
+rebuildModel(initPct);
+updateKPIs();
+renderAllCharts();
+syncAllControls();
+updateLiveSummary();
+renderValuation();
+</script>
+</body>
+</html>
