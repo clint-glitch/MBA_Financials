@@ -336,7 +336,7 @@
   </div>
   <div class="slider-wrap">
     <div style="flex:1">
-      <input type="range" id="adoptionSlider" min="1" max="40" value="10" step="0.5">
+      <input type="range" id="adoptionSlider" min="1" max="40" value="28.8" step="0.5">
       <div class="slider-labels">
         <span>1% Conservative</span>
         <span>10% Moderate</span>
@@ -344,7 +344,7 @@
         <span>40% Aggressive</span>
       </div>
     </div>
-    <div class="pct-badge" id="pctBadge">10%</div>
+    <div class="pct-badge" id="pctBadge">28.8%</div>
   </div>
 </div>
 
@@ -2112,7 +2112,7 @@ function renderValuation() {
 }
 
 // ─── Init ───
-const initPct = 10;
+const initPct = 28.8; // Target: 15,000 builders by Year 3 (28.8% of 52,000)
 slider.value = initPct;
 slider.style.setProperty('--pct', ((initPct - 1) / 39 * 100) + '%');
 rebuildModel(initPct);
