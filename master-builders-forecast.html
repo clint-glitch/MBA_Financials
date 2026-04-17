@@ -320,6 +320,9 @@
   <div class="header-right">
     <span class="date-badge"><span class="live-dot"></span>Live Model · Apr 2026</span>
     <span class="date-badge">52,000 Target Builders · AUS Market</span>
+    <button id="save-url-btn" onclick="saveToURL()" style="background:var(--gold);color:#000;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity 0.2s">
+      🔗 Save &amp; Share
+    </button>
   </div>
 </div>
 
@@ -738,11 +741,11 @@
           <input type="range" class="aslider" id="sl-finGtdRate" min="0.05" max="1.0" step="0.05" value="0.30" oninput="onSl('finGtdRate',this,'finGtdRate',0.01,v=>v.toFixed(2)+'%')">
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div class="cr"><div class="cr-top"><span class="cr-label">Adopt Start <span class="cdot" id="cd-finGtdAdoptStart">●</span></span><span class="cr-val" id="av-finGtdAdoptStart">40%</span></div>
-            <input type="range" class="aslider b" id="sl-finGtdAdoptStart" min="5" max="90" step="5" value="40" oninput="onSl('finGtdAdoptStart',this,'finGtdAdoptStart',0.01,v=>v.toFixed(0)+'%')">
+          <div class="cr"><div class="cr-top"><span class="cr-label">Adopt Start <span class="cdot" id="cd-finGtdAdoptStart">●</span></span><span class="cr-val" id="av-finGtdAdoptStart">10%</span></div>
+            <input type="range" class="aslider b" id="sl-finGtdAdoptStart" min="5" max="90" step="5" value="10" oninput="onSl('finGtdAdoptStart',this,'finGtdAdoptStart',0.01,v=>v.toFixed(0)+'%')">
           </div>
-          <div class="cr"><div class="cr-top"><span class="cr-label">Adopt End <span class="cdot" id="cd-finGtdAdoptEnd">●</span></span><span class="cr-val" id="av-finGtdAdoptEnd">65%</span></div>
-            <input type="range" class="aslider b" id="sl-finGtdAdoptEnd" min="10" max="100" step="5" value="65" oninput="onSl('finGtdAdoptEnd',this,'finGtdAdoptEnd',0.01,v=>v.toFixed(0)+'%')">
+          <div class="cr"><div class="cr-top"><span class="cr-label">Adopt End <span class="cdot" id="cd-finGtdAdoptEnd">●</span></span><span class="cr-val" id="av-finGtdAdoptEnd">60%</span></div>
+            <input type="range" class="aslider b" id="sl-finGtdAdoptEnd" min="10" max="100" step="5" value="60" oninput="onSl('finGtdAdoptEnd',this,'finGtdAdoptEnd',0.01,v=>v.toFixed(0)+'%')">
           </div>
         </div>
         <div class="sub-sec">
@@ -776,11 +779,11 @@
             <span style="font-size:12px;font-weight:600;color:var(--text)">Transaction Account Spread</span>
             <label class="atog"><input type="checkbox" id="tog-finSpreadEnabled" checked onchange="onTog('finSpreadEnabled',this.checked)"><span class="atog-t"></span><span class="atog-l"></span></label>
           </div>
-          <div class="cr"><div class="cr-top"><span class="cr-label">Spread Rate (PA) <span class="cdot" id="cd-txnSpreadRatePA">●</span></span><span class="cr-val" id="av-txnSpreadRatePA">1.50%PA</span></div>
-            <input type="range" class="aslider g" id="sl-txnSpreadRatePA" min="0.25" max="5" step="0.25" value="1.5" oninput="onSl('txnSpreadRatePA',this,'txnSpreadRatePA',0.01,v=>v.toFixed(2)+'%PA')">
+          <div class="cr"><div class="cr-top"><span class="cr-label">Spread Rate (PA) <span class="cdot" id="cd-txnSpreadRatePA">●</span></span><span class="cr-val" id="av-txnSpreadRatePA">2.00%PA</span></div>
+            <input type="range" class="aslider g" id="sl-txnSpreadRatePA" min="0.25" max="5" step="0.25" value="2" oninput="onSl('txnSpreadRatePA',this,'txnSpreadRatePA',0.01,v=>v.toFixed(2)+'%PA')">
           </div>
           <div class="cr"><div class="cr-top"><span class="cr-label">Avg Account Balance <span class="cdot" id="cd-txnAvgBalance">●</span></span></div>
-            <div style="display:flex;align-items:center;gap:4px"><span class="anum-pre">$</span><input type="number" class="anum" id="num-txnAvgBalance" value="75000" min="0" max="1000000" step="5000" oninput="onNum('txnAvgBalance',this.value,'txnAvgBalance')"></div>
+            <div style="display:flex;align-items:center;gap:4px"><span class="anum-pre">$</span><input type="number" class="anum" id="num-txnAvgBalance" value="300000" min="0" max="1000000" step="5000" oninput="onNum('txnAvgBalance',this.value,'txnAvgBalance')"></div>
           </div>
         </div>
       </div>
@@ -812,11 +815,11 @@
             <input type="range" class="aslider g" id="sl-mktSupplierRate" min="0.5" max="8" step="0.5" value="4" oninput="onSl('mktSupplierRate',this,'mktSupplierRate',0.01,v=>v.toFixed(1)+'%')">
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <div class="cr"><div class="cr-top"><span class="cr-label">Adopt Start <span class="cdot" id="cd-mktSupplierAdoptStart">●</span></span><span class="cr-val" id="av-mktSupplierAdoptStart">15%</span></div>
-              <input type="range" class="aslider b" id="sl-mktSupplierAdoptStart" min="5" max="70" step="5" value="15" oninput="onSl('mktSupplierAdoptStart',this,'mktSupplierAdoptStart',0.01,v=>v.toFixed(0)+'%')">
+            <div class="cr"><div class="cr-top"><span class="cr-label">Adopt Start <span class="cdot" id="cd-mktSupplierAdoptStart">●</span></span><span class="cr-val" id="av-mktSupplierAdoptStart">10%</span></div>
+              <input type="range" class="aslider b" id="sl-mktSupplierAdoptStart" min="5" max="70" step="5" value="10" oninput="onSl('mktSupplierAdoptStart',this,'mktSupplierAdoptStart',0.01,v=>v.toFixed(0)+'%')">
             </div>
-            <div class="cr"><div class="cr-top"><span class="cr-label">Adopt End <span class="cdot" id="cd-mktSupplierAdoptEnd">●</span></span><span class="cr-val" id="av-mktSupplierAdoptEnd">35%</span></div>
-              <input type="range" class="aslider b" id="sl-mktSupplierAdoptEnd" min="10" max="90" step="5" value="35" oninput="onSl('mktSupplierAdoptEnd',this,'mktSupplierAdoptEnd',0.01,v=>v.toFixed(0)+'%')">
+            <div class="cr"><div class="cr-top"><span class="cr-label">Adopt End <span class="cdot" id="cd-mktSupplierAdoptEnd">●</span></span><span class="cr-val" id="av-mktSupplierAdoptEnd">60%</span></div>
+              <input type="range" class="aslider b" id="sl-mktSupplierAdoptEnd" min="10" max="90" step="5" value="60" oninput="onSl('mktSupplierAdoptEnd',this,'mktSupplierAdoptEnd',0.01,v=>v.toFixed(0)+'%')">
             </div>
           </div>
         </div>
@@ -844,22 +847,22 @@
         <div style="font-size:11px;color:var(--sub);margin-bottom:12px">Founding team — additional hires scale proportionally from Month 4 onward.</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
           <div class="cr"><div class="cr-top"><span class="cr-label">4 × Founders <span class="cdot" id="cd-salFounders">●</span></span></div>
-            <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-salFounders" value="40000" min="0" max="500000" step="1000" oninput="onNum('salFounders',this.value,'salFounders');updateSalTotal()"></div>
+            <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-salFounders" value="60000" min="0" max="500000" step="1000" oninput="onNum('salFounders',this.value,'salFounders');updateSalTotal()"></div>
           </div>
           <div class="cr"><div class="cr-top"><span class="cr-label">2 × Tech/Eng <span class="cdot" id="cd-salTech">●</span></span></div>
             <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-salTech" value="20000" min="0" max="200000" step="1000" oninput="onNum('salTech',this.value,'salTech');updateSalTotal()"></div>
           </div>
           <div class="cr"><div class="cr-top"><span class="cr-label">1 × Marketing <span class="cdot" id="cd-salMarketing">●</span></span></div>
-            <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-salMarketing" value="7500" min="0" max="50000" step="500" oninput="onNum('salMarketing',this.value,'salMarketing');updateSalTotal()"></div>
+            <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-salMarketing" value="10000" min="0" max="50000" step="500" oninput="onNum('salMarketing',this.value,'salMarketing');updateSalTotal()"></div>
           </div>
           <div class="cr"><div class="cr-top"><span class="cr-label">2 × Content <span class="cdot" id="cd-salContent">●</span></span></div>
-            <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-salContent" value="11600" min="0" max="100000" step="500" oninput="onNum('salContent',this.value,'salContent');updateSalTotal()"></div>
+            <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-salContent" value="16667" min="0" max="100000" step="500" oninput="onNum('salContent',this.value,'salContent');updateSalTotal()"></div>
           </div>
           <div class="cr"><div class="cr-top"><span class="cr-label">1 × Compliance <span class="cdot" id="cd-salCompliance">●</span></span></div>
-            <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-salCompliance" value="8000" min="0" max="50000" step="500" oninput="onNum('salCompliance',this.value,'salCompliance');updateSalTotal()"></div>
+            <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-salCompliance" value="11667" min="0" max="50000" step="500" oninput="onNum('salCompliance',this.value,'salCompliance');updateSalTotal()"></div>
           </div>
           <div class="cr"><div class="cr-top"><span class="cr-label">2 × Sales/BDM <span class="cdot" id="cd-salSales">●</span></span></div>
-            <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-salSales" value="14000" min="0" max="100000" step="500" oninput="onNum('salSales',this.value,'salSales');updateSalTotal()"></div>
+            <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-salSales" value="16667" min="0" max="100000" step="500" oninput="onNum('salSales',this.value,'salSales');updateSalTotal()"></div>
           </div>
         </div>
         <div style="background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.2);border-radius:6px;padding:8px 12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center">
@@ -877,45 +880,45 @@
         <div style="display:grid;grid-template-columns:auto 1fr 12px 1fr;gap:6px;align-items:center;font-size:11px;color:var(--sub);margin-bottom:6px"><span></span><span>Month 1</span><span></span><span>Month 36</span></div>
         <div style="display:grid;grid-template-columns:auto 1fr 12px 1fr;gap:6px;align-items:center">
           <span style="font-size:11px;color:var(--muted);min-width:100px">☁️ Cloud/Infra</span>
-          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-cloudStart" value="5000" step="500" min="0" oninput="onNum('cloudStart',this.value)"></div>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-cloudStart" value="6500" step="500" min="0" oninput="onNum('cloudStart',this.value)"></div>
           <span style="text-align:center;color:var(--sub)">→</span>
-          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-cloudEnd" value="25000" step="500" min="0" oninput="onNum('cloudEnd',this.value)"></div>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-cloudEnd" value="32500" step="500" min="0" oninput="onNum('cloudEnd',this.value)"></div>
           <span style="font-size:11px;color:var(--muted);min-width:100px">📢 Marketing</span>
-          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-mktgStart" value="15000" step="1000" min="0" oninput="onNum('mktgStart',this.value)"></div>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-mktgStart" value="19500" step="1000" min="0" oninput="onNum('mktgStart',this.value)"></div>
           <span style="text-align:center;color:var(--sub)">→</span>
-          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-mktgEnd" value="80000" step="1000" min="0" oninput="onNum('mktgEnd',this.value)"></div>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-mktgEnd" value="104000" step="1000" min="0" oninput="onNum('mktgEnd',this.value)"></div>
           <span style="font-size:11px;color:var(--muted);min-width:100px">⚖️ Legal</span>
-          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-legalStart" value="8000" step="500" min="0" oninput="onNum('legalStart',this.value)"></div>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-legalStart" value="10400" step="500" min="0" oninput="onNum('legalStart',this.value)"></div>
           <span style="text-align:center;color:var(--sub)">→</span>
-          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-legalEnd" value="12000" step="500" min="0" oninput="onNum('legalEnd',this.value)"></div>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-legalEnd" value="15600" step="500" min="0" oninput="onNum('legalEnd',this.value)"></div>
           <span style="font-size:11px;color:var(--muted);min-width:100px">🏢 Office</span>
-          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-officeStart" value="8000" step="500" min="0" oninput="onNum('officeStart',this.value)"></div>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-officeStart" value="10400" step="500" min="0" oninput="onNum('officeStart',this.value)"></div>
           <span style="text-align:center;color:var(--sub)">→</span>
-          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-officeEnd" value="15000" step="500" min="0" oninput="onNum('officeEnd',this.value)"></div>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-officeEnd" value="19500" step="500" min="0" oninput="onNum('officeEnd',this.value)"></div>
           <span style="font-size:11px;color:var(--muted);min-width:100px">💻 Software</span>
-          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-softwareStart" value="5000" step="500" min="0" oninput="onNum('softwareStart',this.value)"></div>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-softwareStart" value="6500" step="500" min="0" oninput="onNum('softwareStart',this.value)"></div>
           <span style="text-align:center;color:var(--sub)">→</span>
-          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-softwareEnd" value="10000" step="500" min="0" oninput="onNum('softwareEnd',this.value)"></div>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-softwareEnd" value="13000" step="500" min="0" oninput="onNum('softwareEnd',this.value)"></div>
           <span style="font-size:11px;color:var(--muted);min-width:100px">🛡️ Insurance</span>
-          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-insuranceStart" value="3000" step="250" min="0" oninput="onNum('insuranceStart',this.value)"></div>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-insuranceStart" value="3900" step="250" min="0" oninput="onNum('insuranceStart',this.value)"></div>
           <span style="text-align:center;color:var(--sub)">→</span>
-          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-insuranceEnd" value="5000" step="250" min="0" oninput="onNum('insuranceEnd',this.value)"></div>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-insuranceEnd" value="6500" step="250" min="0" oninput="onNum('insuranceEnd',this.value)"></div>
           <span style="font-size:11px;color:var(--muted);min-width:100px">📒 Accounting</span>
-          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-accountingStart" value="3000" step="250" min="0" oninput="onNum('accountingStart',this.value)"></div>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-accountingStart" value="3900" step="250" min="0" oninput="onNum('accountingStart',this.value)"></div>
           <span style="text-align:center;color:var(--sub)">→</span>
-          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-accountingEnd" value="8000" step="250" min="0" oninput="onNum('accountingEnd',this.value)"></div>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-accountingEnd" value="10400" step="250" min="0" oninput="onNum('accountingEnd',this.value)"></div>
           <span style="font-size:11px;color:var(--muted);min-width:100px">✈️ Travel/BD</span>
-          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-travelStart" value="5000" step="500" min="0" oninput="onNum('travelStart',this.value)"></div>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-travelStart" value="6500" step="500" min="0" oninput="onNum('travelStart',this.value)"></div>
           <span style="text-align:center;color:var(--sub)">→</span>
-          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-travelEnd" value="10000" step="500" min="0" oninput="onNum('travelEnd',this.value)"></div>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-travelEnd" value="13000" step="500" min="0" oninput="onNum('travelEnd',this.value)"></div>
           <span style="font-size:11px;color:var(--muted);min-width:100px">🎧 Support</span>
-          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-supportStart" value="2000" step="500" min="0" oninput="onNum('supportStart',this.value)"></div>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-supportStart" value="2600" step="500" min="0" oninput="onNum('supportStart',this.value)"></div>
           <span style="text-align:center;color:var(--sub)">→</span>
-          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-supportEnd" value="20000" step="500" min="0" oninput="onNum('supportEnd',this.value)"></div>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-supportEnd" value="26000" step="500" min="0" oninput="onNum('supportEnd',this.value)"></div>
           <span style="font-size:11px;color:var(--muted);min-width:100px">📦 Misc</span>
-          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-miscStart" value="5000" step="500" min="0" oninput="onNum('miscStart',this.value)"></div>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-miscStart" value="6500" step="500" min="0" oninput="onNum('miscStart',this.value)"></div>
           <span style="text-align:center;color:var(--sub)">→</span>
-          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-miscEnd" value="10000" step="500" min="0" oninput="onNum('miscEnd',this.value)"></div>
+          <div style="display:flex;align-items:center;gap:3px"><span class="anum-pre">$</span><input type="number" class="anum anum-sm" id="num-miscEnd" value="13000" step="500" min="0" oninput="onNum('miscEnd',this.value)"></div>
         </div>
       </div>
     </div>
@@ -1066,20 +1069,20 @@ const DEFAULTS = {
   subEnabled:true, priceFree:0, priceBasic:49, pricePro:99, priceEnterprise:299,
   contractsEnabled:true, contractFee:120,
   tierPh1:[0.55,0.27,0.13,0.05], tierPh2:[0.45,0.32,0.16,0.07], tierPh3:[0.38,0.34,0.18,0.10],
-  finGtdEnabled:true, finGtdRate:0.003, finGtdAdoptStart:0.40, finGtdAdoptEnd:0.65,
+  finGtdEnabled:true, finGtdRate:0.003, finGtdAdoptStart:0.10, finGtdAdoptEnd:0.60,
   finEarlyEnabled:true, finEarlyRate:0.0007, finEarlyAdoptStart:0.25, finEarlyAdoptEnd:0.45,
   finFloatEnabled:true, floatRatePA:0.045,
-  finSpreadEnabled:true, txnSpreadRatePA:0.015, txnAvgBalance:75000,
+  finSpreadEnabled:true, txnSpreadRatePA:0.02, txnAvgBalance:300000,
   mktEnabled:true,
   mktGtdOutRate:0.003, mktGtdOutAdoptStart:0.30, mktGtdOutAdoptEnd:0.55,
-  mktSupplierRate:0.04, mktSupplierAdoptStart:0.15, mktSupplierAdoptEnd:0.35,
+  mktSupplierRate:0.04, mktSupplierAdoptStart:0.10, mktSupplierAdoptEnd:0.60,
   mktTradesRate:0.02, mktTradesAdoptStart:0.20, mktTradesAdoptEnd:0.45,
-  salFounders:40000, salTech:20000, salMarketing:7500, salContent:11600, salCompliance:8000, salSales:14000,
-  cloudStart:5000,cloudEnd:25000, mktgStart:15000,mktgEnd:80000,
-  legalStart:8000,legalEnd:12000, officeStart:8000,officeEnd:15000,
-  softwareStart:5000,softwareEnd:10000, insuranceStart:3000,insuranceEnd:5000,
-  accountingStart:3000,accountingEnd:8000, travelStart:5000,travelEnd:10000,
-  supportStart:2000,supportEnd:20000, miscStart:5000,miscEnd:10000,
+  salFounders:60000, salTech:20000, salMarketing:10000, salContent:16667, salCompliance:11667, salSales:16667,
+  cloudStart:6500,cloudEnd:32500, mktgStart:19500,mktgEnd:104000,
+  legalStart:10400,legalEnd:15600, officeStart:10400,officeEnd:19500,
+  softwareStart:6500,softwareEnd:13000, insuranceStart:3900,insuranceEnd:6500,
+  accountingStart:3900,accountingEnd:10400, travelStart:6500,travelEnd:13000,
+  supportStart:2600,supportEnd:26000, miscStart:6500,miscEnd:13000,
 };
 let A = {...DEFAULTS};
 
@@ -1128,7 +1131,7 @@ function builderRevenue(month) {
 // ─── Expense model (uses A object) ───
 function getExpenses(month) {
   const base = A.salFounders+A.salTech+A.salMarketing+A.salContent+A.salCompliance+A.salSales;
-  const sc = base/101100;
+  const sc = base/135001;
   let salaries = base;
   if(month>=4)  salaries+=18000*sc; if(month>=7)  salaries+=16000*sc;
   if(month>=10) salaries+=10000*sc; if(month>=13) salaries+=32000*sc;
@@ -2111,8 +2114,36 @@ function renderValuation() {
   });
 }
 
+// ─── Save to URL ───
+function saveToURL() {
+  const payload = JSON.stringify({a: A, pct: parseFloat(slider.value)});
+  const encoded = btoa(unescape(encodeURIComponent(payload)));
+  const url = location.origin + location.pathname + '#s=' + encoded;
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById('save-url-btn');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✅ Copied!';
+    btn.style.background = '#10b981';
+    setTimeout(() => { btn.innerHTML = orig; btn.style.background = 'var(--gold)'; }, 2000);
+  }).catch(() => {
+    prompt('Copy this link to share your model:', url);
+  });
+}
+
+function loadFromURL() {
+  try {
+    const hash = location.hash;
+    if (!hash.startsWith('#s=')) return null;
+    const encoded = hash.slice(3);
+    const payload = JSON.parse(decodeURIComponent(escape(atob(encoded))));
+    if (payload.a) Object.assign(A, payload.a);
+    return payload.pct || null;
+  } catch(e) { return null; }
+}
+
 // ─── Init ───
-const initPct = 28.8; // Target: 15,000 builders by Year 3 (28.8% of 52,000)
+const savedPct = loadFromURL();
+const initPct = savedPct !== null ? savedPct : 28.8; // Target: 15,000 builders by Year 3 (28.8% of 52,000)
 slider.value = initPct;
 slider.style.setProperty('--pct', ((initPct - 1) / 39 * 100) + '%');
 rebuildModel(initPct);
