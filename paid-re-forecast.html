@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paid.re — Financial Forecast 2026–2030</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{--bg:#080f1a;--card:#0f1825;--card2:#162030;--border:#1c2d44;--accent:#06b6d4;--accent2:#38bdf8;--green:#10b981;--red:#ef4444;--purple:#8b5cf6;--gold:#f59e0b;--orange:#f97316;--pink:#ec4899;--text:#f1f5f9;--muted:#94a3b8;--sub:#64748b}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
+.header{background:linear-gradient(135deg,#0c1a2e,#080f1a);border-bottom:1px solid var(--border);padding:15px 26px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:11px}
+.logo-icon{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#0284c7);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;letter-spacing:-1px}
+.logo-text h1{font-size:17px;font-weight:800;letter-spacing:-.4px}
+.logo-text p{font-size:11px;color:var(--muted)}
+.header-right{display:flex;align-items:center;gap:10px}
+.date-badge{background:var(--card2);border:1px solid var(--border);padding:4px 11px;border-radius:20px;font-size:11px;color:var(--muted)}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;margin-right:5px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.share-btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:6px 13px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .2s}
+.share-btn:hover{opacity:.85}
+/* Scenario banner */
+.scen-bar{background:linear-gradient(135deg,#0c1a2e,#0f1825);border-bottom:1px solid var(--border);padding:13px 26px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.scen-label{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+.scen-btns{display:flex;gap:5px}
+.scen-btn{background:var(--card2);border:1px solid var(--border);color:var(--muted);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap}
+.scen-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.scen-btn:hover:not(.active){border-color:var(--accent);color:var(--accent)}
+.scen-meta{margin-left:auto;display:flex;gap:24px;flex-wrap:wrap}
+.smeta .val{font-size:19px;font-weight:700;color:var(--accent)}
+.smeta .lbl{font-size:10px;color:var(--sub);margin-top:1px}
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:11px;padding:16px 26px 8px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:14px 15px;position:relative;overflow:hidden}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--a,var(--accent))}
+.kpi-label{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.kpi-value{font-size:21px;font-weight:700;line-height:1}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.up{color:var(--green)} .dn{color:var(--red)}
+/* Tabs */
+.tabs-bar{display:flex;gap:2px;padding:10px 26px 0;border-bottom:1px solid var(--border);overflow-x:auto}
+.tab-btn{background:none;border:none;color:var(--sub);cursor:pointer;font-size:12px;font-weight:600;padding:6px 14px 10px;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s}
+.tab-btn:hover{color:var(--muted)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-content{display:none;padding:20px 26px}
+.tab-content.active{display:block}
+/* Cards */
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:17px}
+.chart-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.chart-sub{font-size:11px;color:var(--sub);margin-bottom:13px}
+.chart-wrap{position:relative;height:230px}
+.chart-wrap.tall{height:280px}
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.charts-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px}
+.full{grid-column:1/-1}
+/* Tables */
+.table-card{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:17px;overflow-x:auto;margin-bottom:16px}
+.table-title{font-size:13px;font-weight:600;margin-bottom:11px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead th{text-align:right;color:var(--sub);font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:.6px;padding:5px 9px;border-bottom:1px solid var(--border)}
+thead th:first-child{text-align:left}
+tbody tr{border-bottom:1px solid rgba(255,255,255,.04)}
+tbody tr:hover{background:rgba(255,255,255,.025)}
+tbody td{padding:6px 9px;text-align:right;color:var(--text)}
+tbody td:first-child{text-align:left;color:var(--muted)}
+.subtotal td{background:rgba(6,182,212,.06);font-weight:600}
+.total-row td{background:rgba(6,182,212,.12)!important;font-weight:700;color:var(--accent)!important}
+.pl-section td{background:rgba(255,255,255,.025)!important;color:var(--sub)!important;font-size:10px;text-transform:uppercase;letter-spacing:.8px;font-weight:700}
+.neg{color:var(--red)!important} .pos{color:var(--green)!important}
+/* Assumptions */
+.assump-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:13px}
+.assump-card{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:15px}
+.assump-card-title{font-size:10px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:11px}
+.assump-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);gap:10px}
+.assump-row:last-child{border:none}
+.assump-key{font-size:12px;color:var(--muted);flex:1}
+.ai{background:var(--card2);border:1px solid var(--border);color:var(--text);padding:4px 7px;border-radius:5px;font-size:12px;font-weight:600;text-align:right;outline:none;transition:border-color .2s}
+.ai:focus{border-color:var(--accent)}
+.ai-sm{width:80px}
+.ai-md{width:105px}
+.ai-lg{width:130px}
+/* Wage table */
+.wage-table-wrap{overflow-x:auto}
+.wage-table{font-size:11px}
+.wage-table thead th{font-size:9px;padding:4px 7px}
+.wage-table tbody td{padding:5px 7px}
+.wage-table .salary-input{background:var(--card2);border:1px solid var(--border);color:var(--text);padding:2px 5px;border-radius:4px;font-size:11px;width:80px;text-align:right;outline:none}
+.wage-table .salary-input:focus{border-color:var(--accent)}
+/* Toggle */
+.toggle{position:relative;width:36px;height:19px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--border);border-radius:19px;transition:.25s}
+.toggle-slider:before{position:absolute;content:'';height:13px;width:13px;left:3px;bottom:3px;background:var(--muted);border-radius:50%;transition:.25s}
+.toggle input:checked+.toggle-slider{background:var(--accent)}
+.toggle input:checked+.toggle-slider:before{transform:translateX(17px);background:#fff}
+/* Agency cards */
+.agency-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:9px}
+.agency-card{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;transition:border-color .2s}
+.agency-card.enabled{border-color:rgba(6,182,212,.4)}
+.agency-card.core-card{border-color:rgba(6,182,212,.2);background:rgba(6,182,212,.03)}
+.agency-name{font-size:12px;font-weight:600;margin-bottom:3px}
+.agency-meta{font-size:10px;color:var(--sub)}
+.agency-rev{font-size:11px;color:var(--accent);font-weight:600;text-align:right}
+.agency-rev-lbl{font-size:9px;color:var(--sub);text-align:right}
+.ag-input{background:var(--card2);border:1px solid var(--border);color:var(--text);padding:2px 5px;border-radius:4px;font-size:10px;text-align:right;outline:none}
+.ag-input:focus{border-color:var(--accent)}
+.section-label{font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+/* Badges */
+.badge{font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px;text-transform:uppercase}
+.b-core{background:rgba(6,182,212,.15);color:var(--accent)}
+.b-vic{background:rgba(16,185,129,.12);color:var(--green)}
+.b-nat{background:rgba(249,115,22,.12);color:var(--orange)}
+/* Monthly selector */
+.yr-btns{display:flex;gap:5px;margin-bottom:14px}
+.yr-btn{background:var(--card2);border:1px solid var(--border);color:var(--sub);padding:5px 13px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
+.yr-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+/* BS section */
+.bs-note{font-size:11px;color:var(--sub);background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);border-radius:7px;padding:10px 13px;margin-bottom:14px;line-height:1.6}
+/* Toast */
+.toast{position:fixed;bottom:26px;right:26px;z-index:999;background:var(--accent);color:#fff;padding:9px 18px;border-radius:8px;font-size:12px;font-weight:600;transform:translateY(60px);opacity:0;transition:all .3s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+@media(max-width:768px){.charts-grid,.charts-grid-3{grid-template-columns:1fr}.kpi-row{grid-template-columns:1fr 1fr}.scen-meta{display:none}}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon">P.re</div>
+    <div class="logo-text"><h1>Paid.re</h1><p>Real Estate Financial Forecast · 2026–2030</p></div>
+  </div>
+  <div class="header-right">
+    <div class="date-badge"><span class="live-dot"></span>Live Model</div>
+    <button class="share-btn" onclick="shareURL()">⬡ Save &amp; Share URL</button>
+  </div>
+</header>
+
+<div class="scen-bar">
+  <span class="scen-label">Scenario</span>
+  <div class="scen-btns">
+    <button class="scen-btn" id="scen-baseline" onclick="setScenario('baseline')">Baseline</button>
+    <button class="scen-btn" id="scen-victoria" onclick="setScenario('victoria')">+ Victoria</button>
+    <button class="scen-btn active" id="scen-national" onclick="setScenario('national')">Full National</button>
+  </div>
+  <div class="scen-meta">
+    <div class="smeta"><div class="val" id="meta-ag">3</div><div class="lbl">Agencies</div></div>
+    <div class="smeta"><div class="val" id="meta-tx">—</div><div class="lbl">Y1 Transactions</div></div>
+    <div class="smeta"><div class="val" id="meta-aum">—</div><div class="lbl">Float AUM</div></div>
+    <div class="smeta"><div class="val" id="meta-y5">—</div><div class="lbl">Y5 Revenue</div></div>
+  </div>
+</div>
+
+<div class="kpi-row">
+  <div class="kpi-card" style="--a:var(--accent)"><div class="kpi-label">Year 1 Revenue</div><div class="kpi-value" id="k-y1r">—</div><div class="kpi-sub">Core customers · 2026</div></div>
+  <div class="kpi-card" style="--a:var(--green)"><div class="kpi-label">Year 5 Revenue</div><div class="kpi-value" id="k-y5r">—</div><div class="kpi-sub" id="k-y5r-s">Full run rate · 2030</div></div>
+  <div class="kpi-card" style="--a:var(--purple)"><div class="kpi-label">Year 1 EBITDA</div><div class="kpi-value" id="k-y1e">—</div><div class="kpi-sub" id="k-y1e-s">After all expenses</div></div>
+  <div class="kpi-card" style="--a:var(--gold)"><div class="kpi-label">Year 5 EBITDA</div><div class="kpi-value" id="k-y5e">—</div><div class="kpi-sub" id="k-y5e-s">EBITDA margin</div></div>
+  <div class="kpi-card" style="--a:var(--orange)"><div class="kpi-label">Y5 Transactions</div><div class="kpi-value" id="k-y5tx">—</div><div class="kpi-sub">Annual settled sales</div></div>
+  <div class="kpi-card" style="--a:var(--pink)"><div class="kpi-label">5-Year Revenue</div><div class="kpi-value" id="k-cum">—</div><div class="kpi-sub">Cumulative 2026–2030</div></div>
+</div>
+
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="showTab('overview',this)">Overview</button>
+  <button class="tab-btn" onclick="showTab('monthly',this)">Monthly P&amp;L</button>
+  <button class="tab-btn" onclick="showTab('bs',this)">Balance Sheet</button>
+  <button class="tab-btn" onclick="showTab('agencies',this)">Agencies</button>
+  <button class="tab-btn" onclick="showTab('assumptions',this)">Assumptions</button>
+  <button class="tab-btn" onclick="showTab('revenue',this)">Revenue Detail</button>
+  <button class="tab-btn" onclick="showTab('pl',this)">P&amp;L</button>
+</div>
+
+<!-- OVERVIEW -->
+<div id="tab-overview" class="tab-content active">
+  <div class="charts-grid">
+    <div class="chart-card"><div class="chart-title">Revenue by Stream</div><div class="chart-sub">5-year stacked ($AUD)</div><div class="chart-wrap tall"><canvas id="ch-stream"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title">EBITDA &amp; Margin</div><div class="chart-sub">Operating profit after expenses</div><div class="chart-wrap tall"><canvas id="ch-ebitda"></canvas></div></div>
+  </div>
+  <div class="charts-grid-3">
+    <div class="chart-card"><div class="chart-title">Transaction Volume</div><div class="chart-sub">Annual settled sales</div><div class="chart-wrap"><canvas id="ch-tx"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title">Revenue / Transaction</div><div class="chart-sub">Blended average all streams</div><div class="chart-wrap"><canvas id="ch-rpt"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title">Revenue Mix — Y1</div><div class="chart-sub">By stream, baseline</div><div class="chart-wrap"><canvas id="ch-mix"></canvas></div></div>
+  </div>
+  <div class="chart-card full"><div class="chart-title">Revenue vs Total Expenses — 5 Year</div><div class="chart-sub">Cost base vs revenue run-rate</div><div class="chart-wrap"><canvas id="ch-rev-exp"></canvas></div></div>
+</div>
+
+<!-- MONTHLY P&L -->
+<div id="tab-monthly" class="tab-content">
+  <div class="yr-btns" id="yr-btns">
+    <button class="yr-btn active" onclick="setMonthlyYear(2026,this)">2026</button>
+    <button class="yr-btn" onclick="setMonthlyYear(2027,this)">2027</button>
+    <button class="yr-btn" onclick="setMonthlyYear(2028,this)">2028</button>
+    <button class="yr-btn" onclick="setMonthlyYear(2029,this)">2029</button>
+    <button class="yr-btn" onclick="setMonthlyYear(2030,this)">2030</button>
+  </div>
+  <div class="charts-grid">
+    <div class="chart-card"><div class="chart-title">Monthly Revenue</div><div class="chart-sub">Stacked by stream</div><div class="chart-wrap tall"><canvas id="ch-mo-rev"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title">Monthly EBITDA</div><div class="chart-sub">Revenue minus all expenses</div><div class="chart-wrap tall"><canvas id="ch-mo-ebitda"></canvas></div></div>
+  </div>
+  <div class="table-card"><div class="table-title" id="mo-tbl-title">Monthly P&amp;L — 2026</div>
+    <table><thead><tr><th style="text-align:left">Month</th><th>Revenue</th><th>Deposit Float</th><th>Release Fees</th><th>Early Release</th><th>Acct Spread</th><th>Agency Float</th><th>Platform Fee</th><th>OTP Float</th><th>PM Bonds</th><th>Personnel</th><th>OpEx</th><th>EBITDA</th></tr></thead>
+    <tbody id="mo-tbody"></tbody></table>
+  </div>
+</div>
+
+<!-- BALANCE SHEET -->
+<div id="tab-bs" class="tab-content">
+  <div class="bs-note">
+    <strong style="color:var(--accent)">Note on Client Trust Funds:</strong> Deposits, MAF balances and agency holding accounts are held in segregated trust accounts (per Property Law Regulations) and are <strong>off balance sheet</strong>. The balance sheet below reflects Paid.re's operating company position only. Client funds under management are disclosed separately.
+  </div>
+  <div class="charts-grid">
+    <div class="chart-card"><div class="chart-title">Total Equity Growth</div><div class="chart-sub">Cumulative shareholder value</div><div class="chart-wrap"><canvas id="ch-equity"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title">Cash vs Liabilities</div><div class="chart-sub">Liquidity position year-end</div><div class="chart-wrap"><canvas id="ch-cash-liab"></canvas></div></div>
+  </div>
+  <div class="table-card"><div class="table-title">Balance Sheet — Year-End Snapshots ($AUD)</div>
+    <table><thead><tr><th style="text-align:left">Line Item</th><th>2026</th><th>2027</th><th>2028</th><th>2029</th><th>2030</th></tr></thead>
+    <tbody id="bs-tbody"></tbody></table>
+  </div>
+  <div class="table-card"><div class="table-title">Client Funds Under Management (Off Balance Sheet)</div>
+    <table><thead><tr><th style="text-align:left">Fund Type</th><th>2026</th><th>2027</th><th>2028</th><th>2029</th><th>2030</th></tr></thead>
+    <tbody id="bs-cfm-tbody"></tbody></table>
+  </div>
+</div>
+
+<!-- AGENCIES -->
+<div id="tab-agencies" class="tab-content">
+  <div style="margin-bottom:20px">
+    <div class="section-label">Core Customers — Baseline</div>
+    <div class="agency-grid" id="ag-core"></div>
+  </div>
+  <div style="margin-bottom:20px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <div class="section-label" style="flex:1;margin:0">Victoria — Optimistic</div>
+      <button class="scen-btn" onclick="toggleGroup('victoria',true)" style="padding:3px 11px;font-size:10px">All ON</button>
+      <button class="scen-btn" onclick="toggleGroup('victoria',false)" style="padding:3px 11px;font-size:10px">All OFF</button>
+    </div>
+    <div class="agency-grid" id="ag-victoria"></div>
+  </div>
+  <div style="margin-top:16px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <div class="section-label" style="flex:1;margin:0">National Networks (Non-VIC) — Go-live Year 2</div>
+      <button class="scen-btn" onclick="toggleGroup('national',true)" style="padding:3px 11px;font-size:10px">All ON</button>
+      <button class="scen-btn" onclick="toggleGroup('national',false)" style="padding:3px 11px;font-size:10px">All OFF</button>
+    </div>
+    <div class="agency-grid" id="ag-national"></div>
+  </div>
+</div>
+
+<!-- ASSUMPTIONS -->
+<div id="tab-assumptions" class="tab-content">
+  <div class="assump-grid">
+
+    <div class="assump-card">
+      <div class="assump-card-title">🏠 Property &amp; Market</div>
+      <div class="assump-row"><span class="assump-key">Avg property price (Melbourne)</span><div style="display:flex;align-items:center;gap:3px"><span style="font-size:11px;color:var(--sub)">$</span><input class="ai ai-lg" id="a-price" type="number" value="900000" oninput="recalcAll()"></div></div>
+      <div class="assump-row"><span class="assump-key">Deposit %</span><input class="ai ai-sm" id="a-depPct" type="number" value="10" step=".5" oninput="recalcAll()"><span style="font-size:11px;color:var(--sub)">%</span></div>
+      <div class="assump-row"><span class="assump-key">Property price growth / yr</span><input class="ai ai-sm" id="a-priceGr" type="number" value="3" step=".5" oninput="recalcAll()"><span style="font-size:11px;color:var(--sub)">%</span></div>
+      <div class="assump-row"><span class="assump-key">Sales volume growth / yr</span><input class="ai ai-sm" id="a-salGr" type="number" value="5" step=".5" oninput="recalcAll()"><span style="font-size:11px;color:var(--sub)">%</span></div>
+      <div class="assump-row"><span class="assump-key">Market gross interest rate</span><input class="ai ai-sm" id="a-mktRate" type="number" value="4.50" step=".1" oninput="recalcAll()"><span style="font-size:11px;color:var(--sub)">%</span></div>
+    </div>
+
+    <div class="assump-card">
+      <div class="assump-card-title">💰 Deposit Float</div>
+      <div class="assump-row"><span class="assump-key">Rate passed to client</span><input class="ai ai-sm" id="a-depUser" type="number" value="1.75" step=".1" oninput="recalcAll()"><span style="font-size:11px;color:var(--sub)">%</span></div>
+      <div class="assump-row"><span class="assump-key">Spread we keep</span><input class="ai ai-sm" id="a-depSpread" type="number" value="3.00" step=".1" oninput="recalcAll()"><span style="font-size:11px;color:var(--sub)">%</span></div>
+      <div class="assump-row"><span class="assump-key">Float period</span><input class="ai ai-sm" id="a-depDays" type="number" value="60" oninput="recalcAll()"><span style="font-size:11px;color:var(--sub)">days</span></div>
+      <div class="assump-row"><span class="assump-key" style="color:var(--sub);font-size:11px">Revenue per $100k deposit</span><span id="a-dep-hint" style="font-size:11px;color:var(--accent)">—</span></div>
+    </div>
+
+    <div class="assump-card">
+      <div class="assump-card-title">📣 MAF Float</div>
+      <div class="assump-row"><span class="assump-key">Avg marketing fund / listing</span><div style="display:flex;align-items:center;gap:3px"><span style="font-size:11px;color:var(--sub)">$</span><input class="ai ai-md" id="a-mafAmt" type="number" value="10000" oninput="recalcAll()"></div></div>
+      <div class="assump-row"><span class="assump-key">% vendors using MAF</span><input class="ai ai-sm" id="a-mafPct" type="number" value="60" oninput="recalcAll()"><span style="font-size:11px;color:var(--sub)">%</span></div>
+      <div class="assump-row"><span class="assump-key">MAF float period</span><input class="ai ai-sm" id="a-mafDays" type="number" value="45" oninput="recalcAll()"><span style="font-size:11px;color:var(--sub)">days</span></div>
+      <div class="assump-row"><span class="assump-key">Spread we keep</span><input class="ai ai-sm" id="a-mafSpread" type="number" value="2.00" step=".1" oninput="recalcAll()"><span style="font-size:11px;color:var(--sub)">%</span></div>
+    </div>
+
+    <div class="assump-card">
+      <div class="assump-card-title">⚡ Agent Early Release</div>
+      <div class="assump-row"><span class="assump-key">Avg agent commission</span><div style="display:flex;align-items:center;gap:3px"><span style="font-size:11px;color:var(--sub)">$</span><input class="ai ai-md" id="a-comm" type="number" value="18000" oninput="recalcAll()"></div></div>
+      <div class="assump-row"><span class="assump-key">% agents taking early release</span><input class="ai ai-sm" id="a-erPct" type="number" value="30" oninput="recalcAll()"><span style="font-size:11px;color:var(--sub)">%</span></div>
+      <div class="assump-row"><span class="assump-key">Early release fee rate</span><input class="ai ai-sm" id="a-erFee" type="number" value="1.50" step=".1" oninput="recalcAll()"><span style="font-size:11px;color:var(--sub)">%</span></div>
+      <div class="assump-row"><span class="assump-key" style="color:var(--sub);font-size:11px">Fee per early release</span><span id="a-er-hint" style="font-size:11px;color:var(--accent)">—</span></div>
+    </div>
+
+    <div class="assump-card">
+      <div class="assump-card-title">🏦 Agent &amp; Agency Accounts</div>
+      <div class="assump-row"><span class="assump-key">Rate passed to agents</span><input class="ai ai-sm" id="a-agRate" type="number" value="3.00" step=".1" oninput="recalcAll()"><span style="font-size:11px;color:var(--sub)">%</span></div>
+      <div class="assump-row"><span class="assump-key">Spread on agent accounts</span><input class="ai ai-sm" id="a-agSpread" type="number" value="1.50" step=".1" oninput="recalcAll()"><span style="font-size:11px;color:var(--sub)">%</span></div>
+      <div class="assump-row"><span class="assump-key">Avg agency holding balance</span><div style="display:flex;align-items:center;gap:3px"><span style="font-size:11px;color:var(--sub)">$</span><input class="ai ai-lg" id="a-agFloat" type="number" value="500000" oninput="recalcAll()"></div></div>
+      <div class="assump-row"><span class="assump-key">Spread on agency float</span><input class="ai ai-sm" id="a-agFloatSpread" type="number" value="1.50" step=".1" oninput="recalcAll()"><span style="font-size:11px;color:var(--sub)">%</span></div>
+      <div class="assump-row"><span class="assump-key">Marshall White AUM</span><div style="display:flex;align-items:center;gap:3px"><span style="font-size:11px;color:var(--sub)">$</span><input class="ai ai-lg" id="a-mwAUM" type="number" value="60000000" oninput="syncMWAUM();recalcAll()"></div></div>
+    </div>
+
+    <div class="assump-card">
+      <div class="assump-card-title">🔑 Fees &amp; Platform</div>
+      <div class="assump-row"><span class="assump-key">Release fee — vendor</span><div style="display:flex;align-items:center;gap:3px"><span style="font-size:11px;color:var(--sub)">$</span><input class="ai ai-sm" id="a-feeV" type="number" value="99" oninput="recalcAll()"></div></div>
+      <div class="assump-row"><span class="assump-key">Release fee — purchaser</span><div style="display:flex;align-items:center;gap:3px"><span style="font-size:11px;color:var(--sub)">$</span><input class="ai ai-sm" id="a-feeP" type="number" value="99" oninput="recalcAll()"></div></div>
+      <div class="assump-row"><span class="assump-key">Monthly platform fee / agency</span><div style="display:flex;align-items:center;gap:3px"><span style="font-size:11px;color:var(--sub)">$</span><input class="ai ai-md" id="a-platFee" type="number" value="1500" oninput="recalcAll()"></div></div>
+      <div class="assump-row"><span class="assump-key">Fee per transaction (combined)</span><span id="a-fee-hint" style="font-size:12px;font-weight:700;color:var(--accent)">$198</span></div>
+    </div>
+
+    <div class="assump-card">
+      <div class="assump-card-title">🏗 OTP Developer Deposits <span style="margin-left:6px"><label class="toggle"><input type="checkbox" id="a-otpOn" onchange="recalcAll()"><span class="toggle-slider"></span></label></span></div>
+      <div class="assump-row"><span class="assump-key">Annual OTP transactions</span><input class="ai ai-md" id="a-otpTx" type="number" value="2000" oninput="recalcAll()"></div>
+      <div class="assump-row"><span class="assump-key">Avg OTP deposit</span><div style="display:flex;align-items:center;gap:3px"><span style="font-size:11px;color:var(--sub)">$</span><input class="ai ai-md" id="a-otpDep" type="number" value="60000" oninput="recalcAll()"></div></div>
+      <div class="assump-row"><span class="assump-key">OTP float period (off-plan)</span><input class="ai ai-sm" id="a-otpDays" type="number" value="365" oninput="recalcAll()"><span style="font-size:11px;color:var(--sub)">days</span></div>
+      <div class="assump-row"><span class="assump-key">OTP spread (same as deposit)</span><span style="font-size:11px;color:var(--sub)">= Deposit spread</span></div>
+      <div class="assump-row"><span class="assump-key" style="color:var(--sub);font-size:11px">Revenue per OTP transaction</span><span id="a-otp-hint" style="font-size:11px;color:var(--accent)">—</span></div>
+    </div>
+
+    <div class="assump-card">
+      <div class="assump-card-title">🏘 Property Mgmt Bonds <span style="margin-left:6px"><label class="toggle"><input type="checkbox" id="a-pmOn" checked onchange="recalcAll()"><span class="toggle-slider"></span></label></span></div>
+      <div class="assump-row"><span class="assump-key">Y1 properties under mgmt</span><input class="ai ai-md" id="a-pmPropsY1" type="number" value="30000" oninput="recalcAll()"></div>
+      <div class="assump-row"><span class="assump-key">Y5 properties under mgmt</span><input class="ai ai-md" id="a-pmPropsY5" type="number" value="150000" oninput="recalcAll()"></div>
+      <div class="assump-row"><span class="assump-key">Avg bond amount</span><div style="display:flex;align-items:center;gap:3px"><span style="font-size:11px;color:var(--sub)">$</span><input class="ai ai-md" id="a-pmBond" type="number" value="2500" oninput="recalcAll()"></div></div>
+      <div class="assump-row"><span class="assump-key">Spread we keep</span><input class="ai ai-sm" id="a-pmSpread" type="number" value="1.50" step=".1" oninput="recalcAll()"><span style="font-size:11px;color:var(--sub)">%</span></div>
+    </div>
+
+    <div class="assump-card">
+      <div class="assump-card-title">📅 Ramp &amp; Growth</div>
+      <div class="assump-row"><span class="assump-key">Core customers Y1 ramp</span><input class="ai ai-sm" id="a-coreRamp" type="number" value="40" oninput="recalcAll()"><span style="font-size:11px;color:var(--sub)">%</span></div>
+      <div class="assump-row"><span class="assump-key">Victoria go-live (year)</span><input class="ai ai-sm" id="a-vicYr" type="number" value="3" min="1" max="5" oninput="recalcAll()"></div>
+      <div class="assump-row"><span class="assump-key">National go-live (year)</span><input class="ai ai-sm" id="a-natYr" type="number" value="3" min="1" max="5" oninput="recalcAll()"></div>
+      <div class="assump-row"><span class="assump-key">Initial capital raise</span><div style="display:flex;align-items:center;gap:3px"><span style="font-size:11px;color:var(--sub)">$</span><input class="ai ai-lg" id="a-capital" type="number" value="3000000" oninput="recalcAll()"></div></div>
+      <div class="assump-row"><span class="assump-key">Corp tax rate</span><input class="ai ai-sm" id="a-tax" type="number" value="30" oninput="recalcAll()"><span style="font-size:11px;color:var(--sub)">%</span></div>
+    </div>
+
+    <div class="assump-card">
+      <div class="assump-card-title">🔧 Operating Expenses (non-wages)</div>
+      <div class="assump-row"><span class="assump-key">Technology &amp; cloud (Y1 → Y5)</span><div style="display:flex;gap:5px"><input class="ai" style="width:70px" id="o-tech1" type="number" value="150000" oninput="recalcAll()"><input class="ai" style="width:70px" id="o-tech5" type="number" value="700000" oninput="recalcAll()"></div></div>
+      <div class="assump-row"><span class="assump-key">Compliance &amp; AFSL/ACL (Y1 → Y5)</span><div style="display:flex;gap:5px"><input class="ai" style="width:70px" id="o-comp1" type="number" value="180000" oninput="recalcAll()"><input class="ai" style="width:70px" id="o-comp5" type="number" value="320000" oninput="recalcAll()"></div></div>
+      <div class="assump-row"><span class="assump-key">Office &amp; facilities (Y1 → Y5)</span><div style="display:flex;gap:5px"><input class="ai" style="width:70px" id="o-off1" type="number" value="160000" oninput="recalcAll()"><input class="ai" style="width:70px" id="o-off5" type="number" value="280000" oninput="recalcAll()"></div></div>
+      <div class="assump-row"><span class="assump-key">Marketing &amp; BD (Y1 → Y5)</span><div style="display:flex;gap:5px"><input class="ai" style="width:70px" id="o-mktg1" type="number" value="180000" oninput="recalcAll()"><input class="ai" style="width:70px" id="o-mktg5" type="number" value="750000" oninput="recalcAll()"></div></div>
+      <div class="assump-row"><span class="assump-key">Legal, insurance &amp; audit (Y1 → Y5)</span><div style="display:flex;gap:5px"><input class="ai" style="width:70px" id="o-lia1" type="number" value="280000" oninput="recalcAll()"><input class="ai" style="width:70px" id="o-lia5" type="number" value="650000" oninput="recalcAll()"></div></div>
+    </div>
+
+  </div>
+
+  <!-- Wages section -->
+  <div style="margin-top:16px">
+    <div class="section-label">Personnel — Salary Breakdown (Base + 11.5% Super)</div>
+    <div class="table-card" style="margin-bottom:0">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div class="table-title" style="margin:0">Role-by-Role Wage Model</div>
+        <div style="font-size:11px;color:var(--sub)">Edit salaries below · Headcount is fixed per year</div>
+      </div>
+      <div class="wage-table-wrap">
+        <table class="wage-table" id="wage-table">
+          <thead><tr><th style="text-align:left">Role</th><th>Base Salary</th><th>Y1 FTE</th><th>Y2 FTE</th><th>Y3 FTE</th><th>Y4 FTE</th><th>Y5 FTE</th><th>Y1 Cost</th><th>Y2 Cost</th><th>Y3 Cost</th><th>Y4 Cost</th><th>Y5 Cost</th></tr></thead>
+          <tbody id="wage-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REVENUE DETAIL -->
+<div id="tab-revenue" class="tab-content">
+  <div class="table-card">
+    <div class="table-title">Revenue by Stream — 5 Year ($AUD)</div>
+    <table><thead><tr><th style="text-align:left">Stream</th><th>2026</th><th>2027</th><th>2028</th><th>2029</th><th>2030</th><th>5-Year Total</th></tr></thead>
+    <tbody id="rev-tbody"></tbody></table>
+  </div>
+  <div class="table-card">
+    <div class="table-title">Revenue by Agency — Year 1 (2026)</div>
+    <table><thead><tr><th style="text-align:left">Agency</th><th>State</th><th>Sales</th><th>Deposit Float</th><th>MAF</th><th>Early Release</th><th>Acct Spread</th><th>Ag Float</th><th>Platform</th><th>Release Fee</th><th>Total</th></tr></thead>
+    <tbody id="ag-rev-tbody"></tbody></table>
+  </div>
+</div>
+
+<!-- P&L -->
+<div id="tab-pl" class="tab-content">
+  <div class="table-card">
+    <div class="table-title">Profit &amp; Loss — 5 Year ($AUD)</div>
+    <table><thead><tr><th style="text-align:left">Line Item</th><th>2026</th><th>2027</th><th>2028</th><th>2029</th><th>2030</th></tr></thead>
+    <tbody id="pl-tbody"></tbody></table>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div class="table-card" style="margin-bottom:0">
+      <div class="table-title">Headcount Plan</div>
+      <table id="hc-table"><thead><tr><th style="text-align:left">Role</th><th>Y1</th><th>Y2</th><th>Y3</th><th>Y4</th><th>Y5</th></tr></thead>
+      <tbody id="hc-tbody"></tbody></table>
+    </div>
+    <div class="table-card" style="margin-bottom:0">
+      <div class="table-title">Key Metrics</div>
+      <table><thead><tr><th style="text-align:left">Metric</th><th>2026</th><th>2027</th><th>2028</th><th>2029</th><th>2030</th></tr></thead>
+      <tbody id="metrics-tbody"></tbody></table>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">URL copied!</div>
+
+<script>
+// ─── ROLES ──────────────────────────────────────────────────────────────────
+const ROLES = [
+  {id:'ceo',  name:'CEO / Founder',    salary:200000, hc:[1,1,1,1,1]},
+  {id:'cto',  name:'CTO',              salary:180000, hc:[1,1,1,1,1]},
+  {id:'cfo',  name:'CFO',              salary:175000, hc:[0,1,1,1,1]},
+  {id:'bd',   name:'Head of BD',       salary:150000, hc:[1,1,1,1,1]},
+  {id:'comp', name:'Compliance Lead',  salary:145000, hc:[1,1,1,1,1]},
+  {id:'eng',  name:'Senior Engineer',  salary:155000, hc:[2,3,5,6,7]},
+  {id:'pm',   name:'Product Manager',  salary:140000, hc:[0,1,1,2,2]},
+  {id:'ops',  name:'Operations',       salary:95000,  hc:[1,2,2,3,4]},
+  {id:'cs',   name:'Customer Success', salary:85000,  hc:[1,1,2,3,4]},
+  {id:'sales',name:'Sales Executive',  salary:120000, hc:[0,1,2,3,4]},
+  {id:'mktg', name:'Marketing',        salary:120000, hc:[0,1,1,2,2]},
+  {id:'sm',   name:'State Manager',    salary:145000, hc:[0,0,0,1,2]},
+];
+
+// ─── AGENCIES ───────────────────────────────────────────────────────────────
+const AGENCIES = [
+  {id:'jc',   name:'Jellis Craig',       group:'core',     state:'VIC', sales:13000, aum:0,        en:true},
+  {id:'reiv', name:'REIV Channel',       group:'core',     state:'VIC', sales:10000, aum:0,        en:true},
+  {id:'mw',   name:'Marshall White',     group:'core',     state:'VIC', sales:2500,  aum:60000000, en:true},
+  {id:'rw_v', name:'Ray White Victoria', group:'victoria', state:'VIC', sales:9000,  aum:0,        en:true},
+  {id:'bp',   name:'Barry Plant',        group:'victoria', state:'VIC', sales:4500,  aum:0,        en:true},
+  {id:'hv',   name:'Harcourts Victoria', group:'victoria', state:'VIC', sales:3500,  aum:0,        en:true},
+  {id:'na',   name:'Nelson Alexander',   group:'victoria', state:'VIC', sales:2200,  aum:0,        en:true},
+  {id:'lv',   name:'LJ Hooker Victoria', group:'victoria', state:'VIC', sales:2800,  aum:0,        en:true},
+  {id:'mv',   name:'McGrath Victoria',   group:'victoria', state:'VIC', sales:2200,  aum:0,        en:true},
+  {id:'fl',   name:'Fletchers',          group:'victoria', state:'VIC', sales:1800,  aum:0,        en:true},
+  {id:'bx',   name:'Buxton',             group:'victoria', state:'VIC', sales:1600,  aum:0,        en:true},
+  {id:'nj',   name:'Noel Jones',         group:'victoria', state:'VIC', sales:1400,  aum:0,        en:true},
+  {id:'c2v',  name:'Century 21 Vic',     group:'victoria', state:'VIC', sales:1300,  aum:0,        en:true},
+  {id:'wd',   name:'Woodards',           group:'victoria', state:'VIC', sales:1100,  aum:0,        en:true},
+  {id:'rte',  name:'RT Edgar',           group:'victoria', state:'VIC', sales:900,   aum:0,        en:true},
+  {id:'bsco', name:'Biggin & Scott',     group:'victoria', state:'VIC', sales:900,   aum:0,        en:true},
+  {id:'gp',   name:'Gary Peer',          group:'victoria', state:'VIC', sales:800,   aum:0,        en:true},
+  {id:'ov',   name:'Other Victoria',     group:'victoria', state:'VIC', sales:5000,  aum:0,        en:true},
+  {id:'rw_nat', name:'Ray White (National)',    group:'national', state:'AU', sales:36000, aum:50000000, en:true},
+  {id:'ljh_nat',name:'LJ Hooker (National)',    group:'national', state:'AU', sales:27200, aum:20000000, en:true},
+  {id:'hc_nat', name:'Harcourts (National)',    group:'national', state:'AU', sales:21500, aum:15000000, en:true},
+  {id:'mg_nat', name:'McGrath (National)',      group:'national', state:'AU', sales:12800, aum:10000000, en:true},
+  {id:'c21',    name:'Century 21 (National)',   group:'national', state:'AU', sales:11000, aum:0,        en:true},
+  {id:'remax',  name:'RE/MAX (National)',       group:'national', state:'AU', sales:8000,  aum:0,        en:true},
+  {id:'belle',  name:'Belle Property',          group:'national', state:'AU', sales:6000,  aum:0,        en:true},
+  {id:'on_nat', name:'Other National Networks', group:'national', state:'AU', sales:127500,aum:0,        en:true},
+];
+
+// ─── MONTHLY RAMP (Year 1) ─────────────────────────────────────────────────
+// Normalized so average = 1.0
+const Y1_RAMP = (()=>{
+  const raw=[0.40,0.50,0.62,0.70,0.78,0.85,0.92,0.98,1.05,1.12,1.20,1.28];
+  const avg=raw.reduce((a,b)=>a+b,0)/12;
+  return raw.map(x=>x/avg);
+})();
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const YEARS=[2026,2027,2028,2029,2030];
+
+let ACTIVE_YEAR=2026;
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+const ga=id=>parseFloat(document.getElementById(id)?.value)||0;
+const fm=(n,d=0)=>{if(isNaN(n)||n==null)return'—';const s=n<0;const a=Math.abs(n);if(a>=1e9)return(s?'-':'')+'$'+(a/1e9).toFixed(2)+'B';if(a>=1e6)return(s?'-':'')+'$'+(a/1e6).toFixed(1)+'M';if(a>=1e3)return(s?'-':'')+'$'+(a/1e3).toFixed(0)+'K';return(s?'-':'')+'$'+a.toFixed(d);};
+const fmk=n=>n>=1000?(n/1000).toFixed(1)+'K':Math.round(n).toString();
+const pct=n=>(n*100).toFixed(1)+'%';
+function interp(a,b){return YEARS.map((_,i)=>a+(b-a)*(i/4));}
+
+// ─── GET ASSUMPTIONS ────────────────────────────────────────────────────────
+function getA(){
+  return{
+    price:    ga('a-price'),
+    depPct:   ga('a-depPct')/100,
+    priceGr:  ga('a-priceGr')/100,
+    salGr:    ga('a-salGr')/100,
+    depSpread:ga('a-depSpread')/100,
+    depDays:  ga('a-depDays'),
+    mafAmt:   ga('a-mafAmt'),
+    mafPct:   ga('a-mafPct')/100,
+    mafDays:  ga('a-mafDays'),
+    mafSpread:ga('a-mafSpread')/100,
+    comm:     ga('a-comm'),
+    erPct:    ga('a-erPct')/100,
+    erFee:    ga('a-erFee')/100,
+    agSpread: ga('a-agSpread')/100,
+    agFloat:  ga('a-agFloat'),
+    agFloatSp:ga('a-agFloatSpread')/100,
+    mwAUM:    ga('a-mwAUM'),
+    feeV:     ga('a-feeV'),
+    feeP:     ga('a-feeP'),
+    platFee:  ga('a-platFee'),
+    otpOn:      document.getElementById('a-otpOn')?.checked||false,
+    otpTx:      ga('a-otpTx'),
+    otpDep:     ga('a-otpDep'),
+    otpDays:    ga('a-otpDays'),
+    pmOn:       document.getElementById('a-pmOn')?.checked||false,
+    pmPropsY1:  ga('a-pmPropsY1'),
+    pmPropsY5:  ga('a-pmPropsY5'),
+    pmBond:     ga('a-pmBond'),
+    pmSpread:   ga('a-pmSpread')/100,
+    coreRamp: ga('a-coreRamp')/100,
+    vicYr:    Math.round(ga('a-vicYr')),
+    natYr:    Math.round(ga('a-natYr')),
+    capital:  ga('a-capital'),
+    taxRate:  ga('a-tax')/100,
+    opexTech: interp(ga('o-tech1'),ga('o-tech5')),
+    opexComp: interp(ga('o-comp1'),ga('o-comp5')),
+    opexOff:  interp(ga('o-off1'), ga('o-off5')),
+    opexMktg: interp(ga('o-mktg1'),ga('o-mktg5')),
+    opexLia:  interp(ga('o-lia1'), ga('o-lia5')),
+  };
+}
+
+// ─── PERSONNEL COST ──────────────────────────────────────────────────────────
+function getPersonnelCost(yi){
+  let total=0;
+  ROLES.forEach(r=>{
+    const sal=parseFloat(document.getElementById('w-'+r.id)?.value)||r.salary;
+    total+=sal*r.hc[yi];
+  });
+  return total*1.115;
+}
+function getTotalHC(yi){return ROLES.reduce((s,r)=>s+r.hc[yi],0);}
+
+// ─── RAMP ────────────────────────────────────────────────────────────────────
+function getRamp(ag,yi,a){
+  if(ag.group==='core') return yi===0?a.coreRamp:Math.pow(1+a.salGr,yi);
+  if(ag.group==='victoria'){
+    const startYi=a.vicYr-1;
+    if(yi<startYi) return 0;
+    const ya=yi-startYi;
+    return(ya===0?0.5:1.0)*Math.pow(1+a.salGr,ya);
+  }
+  // national: 25/50/75/100% ramp over 4 years from natYr
+  const startYi=a.natYr-1;
+  if(yi<startYi) return 0;
+  const ya=yi-startYi;
+  const pcts=[0.11,0.30,0.90,1.0];
+  return pcts[Math.min(ya,3)]*Math.pow(1+a.salGr,ya);
+}
+
+// ─── CALC ONE YEAR ───────────────────────────────────────────────────────────
+function calcYear(yi,a){
+  let dep=0,maf=0,er=0,aum=0,fee=0,agFloat=0,platFee=0;
+  let totalSales=0;
+  let activeCount=0;
+
+  AGENCIES.forEach(ag=>{
+    if(!ag.en) return;
+    const ramp=getRamp(ag,yi,a);
+    if(ramp<=0) return;
+    activeCount++;
+    const price=a.price*Math.pow(1+a.priceGr,yi);
+    const sales=ag.sales*ramp;
+    totalSales+=sales;
+
+    dep  += sales*(price*a.depPct)*a.depSpread*(a.depDays/365);
+    maf  += sales*a.mafPct*a.mafAmt*a.mafSpread*(a.mafDays/365);
+    er   += sales*a.erPct*a.comm*a.erFee;
+    aum  += ag.aum*a.agSpread;
+    fee  += sales*(a.feeV+a.feeP);
+    agFloat += a.agFloat*a.agFloatSp;
+    platFee += a.platFee*12;
+  });
+
+  const otp=a.otpOn?(a.otpTx*Math.pow(1+a.salGr,yi))*a.otpDep*a.depSpread*(a.otpDays/365):0;
+  const pmProps=a.pmOn?a.pmPropsY1+(a.pmPropsY5-a.pmPropsY1)*(yi/4):0;
+  const pm=a.pmOn?pmProps*a.pmBond*a.pmSpread:0;
+
+  const rev=dep+maf+er+aum+fee+agFloat+platFee+otp+pm;
+  const personnel=getPersonnelCost(yi);
+  const opex=a.opexTech[yi]+a.opexComp[yi]+a.opexOff[yi]+a.opexMktg[yi]+a.opexLia[yi];
+  const totalExp=personnel+opex;
+  const ebitda=rev-totalExp;
+  const tax=Math.max(0,ebitda)*a.taxRate;
+  const netProfit=ebitda-tax;
+
+  return{year:YEARS[yi],yi,dep,maf,er,aum,fee,agFloat,platFee,otp,pm,rev,personnel,opex,totalExp,ebitda,tax,netProfit,
+         totalSales:Math.round(totalSales),activeCount,
+         opexBreak:{tech:a.opexTech[yi],comp:a.opexComp[yi],off:a.opexOff[yi],mktg:a.opexMktg[yi],lia:a.opexLia[yi]}};
+}
+
+function calcAll(){
+  const a=getA();
+  return YEARS.map((_,yi)=>calcYear(yi,a));
+}
+
+// ─── BALANCE SHEET ───────────────────────────────────────────────────────────
+function calcBS(results,a){
+  const capex=[400000,200000,150000,100000,100000];
+  const intangibleCost=500000;
+  const amort=125000;
+  let cash=a.capital;
+  return results.map((r,yi)=>{
+    cash+=r.netProfit-capex[yi];
+    const ar=r.rev/12;
+    const intangible=Math.max(0,intangibleCost-(yi+1)*amort);
+    const totalAssets=cash+ar+intangible+50000; // other
+    const ap=r.totalExp/12;
+    const accr=r.personnel/26; // 2 weeks payroll
+    const totalLiab=ap+accr;
+    const equity=totalAssets-totalLiab;
+    // Client funds under management (off BS)
+    const clientDeposits=r.totalSales*(a.price*Math.pow(1+a.priceGr,yi)*a.depPct)*(a.depDays/365);
+    const agencyHolding=r.activeCount*a.agFloat;
+    return{year:r.year,cash,ar,intangible,totalAssets,ap,accr,totalLiab,equity,
+           ebitda:r.ebitda,netProfit:r.netProfit,tax:r.tax,clientDeposits,agencyHolding};
+  });
+}
+
+// ─── MONTHLY CALC ────────────────────────────────────────────────────────────
+function calcMonthly(year,results){
+  const yi=year-2026;
+  const r=results[yi];
+  const txStreams=['dep','maf','er','fee'];
+  return MONTHS.map((m,mi)=>{
+    const mult=yi===0?Y1_RAMP[mi]:1.0;
+    const dep=(r.dep/12)*mult,maf=(r.maf/12)*mult,er=(r.er/12)*mult,fee=(r.fee/12)*mult;
+    const aum=r.aum/12,agFloat=r.agFloat/12,platFee=r.platFee/12,otp=(r.otp/12)*(yi===0?Y1_RAMP[mi]:1);
+    const pm=r.pm/12;
+    const rev=dep+maf+er+aum+fee+agFloat+platFee+otp+pm;
+    const exp=r.totalExp/12;
+    return{m,rev,exp,ebitda:rev-exp,dep,maf,er,aum,fee,agFloat,platFee,otp,pm,personnel:r.personnel/12,opex:r.opex/12};
+  });
+}
+
+// ─── CHARTS ──────────────────────────────────────────────────────────────────
+const C={};
+const gOpts={color:'rgba(255,255,255,.05)'};
+const tOpts={color:'#64748b',font:{size:10}};
+const yl=v=>fm(v);
+const baseOpts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>fm(ctx.raw)}}},scales:{x:{grid:gOpts,ticks:tOpts},y:{grid:gOpts,ticks:{...tOpts,callback:yl}}}};
+const noLegend={...baseOpts};
+const withLegend={...baseOpts,plugins:{...baseOpts.plugins,legend:{display:true,labels:{color:'#94a3b8',font:{size:10},boxWidth:10}}}};
+
+function initCharts(){
+  const ctx=id=>document.getElementById(id).getContext('2d');
+  const YL=['2026','2027','2028','2029','2030'];
+  const acc='#06b6d4',grn='#10b981',pur='#8b5cf6',gld='#f59e0b',org='#f97316',pnk='#ec4899',red='#ef4444';
+
+  C.stream=new Chart(ctx('ch-stream'),{type:'bar',data:{labels:YL,datasets:[
+    {label:'Deposit Float',data:[],backgroundColor:acc,stack:'r'},
+    {label:'Release Fees', data:[],backgroundColor:org,stack:'r'},
+    {label:'Early Release',data:[],backgroundColor:pur,stack:'r'},
+    {label:'Acct Spread',  data:[],backgroundColor:gld,stack:'r'},
+    {label:'MAF Float',    data:[],backgroundColor:grn,stack:'r'},
+    {label:'Agency Float', data:[],backgroundColor:'#0ea5e9',stack:'r'},
+    {label:'Platform Fee', data:[],backgroundColor:pnk,stack:'r'},
+    {label:'OTP Float',    data:[],backgroundColor:'#a78bfa',stack:'r'},
+    {label:'PM Bonds',     data:[],backgroundColor:'#34d399',stack:'r'},
+  ]},options:{...withLegend,scales:{...withLegend.scales,y:{...withLegend.scales.y,stacked:true},x:{...withLegend.scales.x,stacked:true}}}});
+
+  C.ebitda=new Chart(ctx('ch-ebitda'),{type:'bar',data:{labels:YL,datasets:[
+    {label:'Revenue', data:[],backgroundColor:'rgba(6,182,212,.2)',borderColor:acc,borderWidth:1},
+    {label:'Expenses',data:[],backgroundColor:'rgba(239,68,68,.2)',borderColor:red,borderWidth:1},
+    {label:'EBITDA',  data:[],type:'line',borderColor:grn,backgroundColor:'transparent',pointBackgroundColor:grn,tension:.3,borderWidth:2,pointRadius:4},
+  ]},options:withLegend});
+
+  C.tx=new Chart(ctx('ch-tx'),{type:'bar',data:{labels:YL,datasets:[{label:'Transactions',data:[],backgroundColor:'rgba(6,182,212,.4)',borderColor:acc,borderWidth:1}]},options:{...noLegend,scales:{x:{grid:gOpts,ticks:tOpts},y:{grid:gOpts,ticks:{...tOpts,callback:v=>fmk(v)}}}}});
+  C.rpt=new Chart(ctx('ch-rpt'),{type:'line',data:{labels:YL,datasets:[{label:'Rev/Tx',data:[],borderColor:grn,backgroundColor:'rgba(16,185,129,.1)',fill:true,tension:.3,pointRadius:4,pointBackgroundColor:grn,borderWidth:2}]},options:noLegend});
+  C.mix=new Chart(ctx('ch-mix'),{type:'doughnut',data:{labels:['Deposit','Release Fee','Early Release','Acct Spread','MAF','Ag Float','Platform','OTP','PM Bonds'],datasets:[{data:[],backgroundColor:[acc,org,pur,gld,grn,'#0ea5e9',pnk,'#a78bfa','#34d399'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',font:{size:9},boxWidth:8}}},cutout:'58%'}});
+  C.revExp=new Chart(ctx('ch-rev-exp'),{type:'line',data:{labels:YL,datasets:[{label:'Revenue',data:[],borderColor:acc,backgroundColor:'rgba(6,182,212,.1)',fill:true,tension:.3,borderWidth:2,pointRadius:4,pointBackgroundColor:acc},{label:'Expenses',data:[],borderColor:red,backgroundColor:'rgba(239,68,68,.08)',fill:true,tension:.3,borderWidth:2,pointRadius:4,pointBackgroundColor:red}]},options:withLegend});
+
+  // Monthly charts
+  C.moRev=new Chart(ctx('ch-mo-rev'),{type:'bar',data:{labels:MONTHS,datasets:[
+    {label:'Deposit Float',data:[],backgroundColor:acc,stack:'r'},
+    {label:'Release Fees', data:[],backgroundColor:org,stack:'r'},
+    {label:'Early Release',data:[],backgroundColor:pur,stack:'r'},
+    {label:'Other',        data:[],backgroundColor:gld,stack:'r'},
+  ]},options:{...withLegend,scales:{...withLegend.scales,y:{...withLegend.scales.y,stacked:true},x:{...withLegend.scales.x,stacked:true}}}});
+
+  C.moEbitda=new Chart(ctx('ch-mo-ebitda'),{type:'bar',data:{labels:MONTHS,datasets:[
+    {label:'EBITDA',data:[],backgroundColor:MONTHS.map(()=>grn),borderRadius:3},
+  ]},options:noLegend});
+
+  // BS charts
+  C.equity=new Chart(ctx('ch-equity'),{type:'line',data:{labels:YL,datasets:[{label:'Total Equity',data:[],borderColor:grn,backgroundColor:'rgba(16,185,129,.1)',fill:true,tension:.3,borderWidth:2,pointRadius:4,pointBackgroundColor:grn}]},options:noLegend});
+  C.cashLiab=new Chart(ctx('ch-cash-liab'),{type:'bar',data:{labels:YL,datasets:[{label:'Cash',data:[],backgroundColor:'rgba(6,182,212,.5)',borderColor:acc,borderWidth:1},{label:'Liabilities',data:[],backgroundColor:'rgba(239,68,68,.4)',borderColor:red,borderWidth:1}]},options:withLegend});
+}
+
+// ─── UPDATE CHARTS ───────────────────────────────────────────────────────────
+function updateCharts(R){
+  const d=R;
+  C.stream.data.datasets[0].data=d.map(r=>r.dep);
+  C.stream.data.datasets[1].data=d.map(r=>r.fee);
+  C.stream.data.datasets[2].data=d.map(r=>r.er);
+  C.stream.data.datasets[3].data=d.map(r=>r.aum);
+  C.stream.data.datasets[4].data=d.map(r=>r.maf);
+  C.stream.data.datasets[5].data=d.map(r=>r.agFloat);
+  C.stream.data.datasets[6].data=d.map(r=>r.platFee);
+  C.stream.data.datasets[7].data=d.map(r=>r.otp);
+  C.stream.data.datasets[8].data=d.map(r=>r.pm);
+  C.stream.update();
+
+  C.ebitda.data.datasets[0].data=d.map(r=>r.rev);
+  C.ebitda.data.datasets[1].data=d.map(r=>r.totalExp);
+  C.ebitda.data.datasets[2].data=d.map(r=>r.ebitda);
+  C.ebitda.update();
+
+  C.tx.data.datasets[0].data=d.map(r=>r.totalSales);C.tx.update();
+  C.rpt.data.datasets[0].data=d.map(r=>r.totalSales>0?r.rev/r.totalSales:0);C.rpt.update();
+  const y1=d[0];
+  C.mix.data.datasets[0].data=[y1.dep,y1.fee,y1.er,y1.aum,y1.maf,y1.agFloat,y1.platFee,y1.otp,y1.pm];C.mix.update();
+  C.revExp.data.datasets[0].data=d.map(r=>r.rev);
+  C.revExp.data.datasets[1].data=d.map(r=>r.totalExp);C.revExp.update();
+}
+
+function updateMonthlyCharts(year,results){
+  const mo=calcMonthly(year,results);
+  C.moRev.data.datasets[0].data=mo.map(m=>m.dep);
+  C.moRev.data.datasets[1].data=mo.map(m=>m.fee);
+  C.moRev.data.datasets[2].data=mo.map(m=>m.er);
+  C.moRev.data.datasets[3].data=mo.map(m=>m.aum+m.maf+m.agFloat+m.platFee+m.otp);
+  C.moRev.update();
+  C.moEbitda.data.datasets[0].data=mo.map(m=>m.ebitda);
+  C.moEbitda.data.datasets[0].backgroundColor=mo.map(m=>m.ebitda>=0?'rgba(16,185,129,.7)':'rgba(239,68,68,.7)');
+  C.moEbitda.update();
+  // Table
+  let html='';let totRev=0,totExp=0,totEbi=0;
+  mo.forEach(m=>{
+    totRev+=m.rev;totExp+=m.exp;totEbi+=m.ebitda;
+    const cls=m.ebitda>=0?'pos':'neg';
+    html+=`<tr><td>${m.m}</td><td>${fm(m.rev)}</td><td>${fm(m.dep)}</td><td>${fm(m.fee)}</td><td>${fm(m.er)}</td><td>${fm(m.aum)}</td><td>${fm(m.agFloat)}</td><td>${fm(m.platFee)}</td><td>${fm(m.otp)}</td><td>${fm(m.pm)}</td><td class="neg">${fm(m.personnel)}</td><td class="neg">${fm(m.opex)}</td><td class="${cls}">${fm(m.ebitda)}</td></tr>`;
+  });
+  html+=`<tr class="total-row"><td>Total</td><td>${fm(totRev)}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="${totEbi>=0?'pos':'neg'}">${fm(totEbi)}</td></tr>`;
+  document.getElementById('mo-tbody').innerHTML=html;
+  document.getElementById('mo-tbl-title').textContent=`Monthly P&L — ${year}`;
+}
+
+function updateBSCharts(bsData){
+  C.equity.data.datasets[0].data=bsData.map(b=>b.equity);C.equity.update();
+  C.cashLiab.data.datasets[0].data=bsData.map(b=>b.cash);
+  C.cashLiab.data.datasets[1].data=bsData.map(b=>b.totalLiab);C.cashLiab.update();
+}
+
+// ─── UPDATE UI ───────────────────────────────────────────────────────────────
+function updateKPIs(R){
+  const y1=R[0],y5=R[4];
+  document.getElementById('k-y1r').textContent=fm(y1.rev);
+  document.getElementById('k-y5r').textContent=fm(y5.rev);
+  document.getElementById('k-y1e').textContent=fm(y1.ebitda);
+  document.getElementById('k-y1e').className='kpi-value '+(y1.ebitda>=0?'up':'dn');
+  document.getElementById('k-y5e').textContent=fm(y5.ebitda);
+  document.getElementById('k-y5e').className='kpi-value '+(y5.ebitda>=0?'up':'dn');
+  document.getElementById('k-y5e-s').textContent=pct(y5.ebitda/y5.rev)+' margin';
+  document.getElementById('k-y5tx').textContent=fmk(y5.totalSales);
+  document.getElementById('k-cum').textContent=fm(R.reduce((s,r)=>s+r.rev,0));
+  document.getElementById('meta-ag').textContent=AGENCIES.filter(a=>a.en).length;
+  document.getElementById('meta-tx').textContent=fmk(y1.totalSales);
+  const totalAUM=AGENCIES.filter(a=>a.en).reduce((s,a)=>s+a.aum,0)+R[0].activeCount*(ga('a-agFloat'));
+  document.getElementById('meta-aum').textContent=fm(totalAUM);
+  document.getElementById('meta-y5').textContent=fm(y5.rev);
+}
+
+function updateHints(){
+  const a=getA();
+  document.getElementById('a-dep-hint').textContent=fm(100000*a.depSpread*(a.depDays/365))+' / $100k';
+  document.getElementById('a-er-hint').textContent=fm(a.comm*a.erFee);
+  document.getElementById('a-fee-hint').textContent='$'+(ga('a-feeV')+ga('a-feeP'));
+  document.getElementById('a-otp-hint').textContent=fm(a.otpDep*a.depSpread*(a.otpDays/365));
+}
+
+function updateRevenueTable(R){
+  const streams=[
+    {key:'dep',  label:'Deposit Float Revenue',         cls:''},
+    {key:'fee',  label:'Settlement Release Fees',        cls:''},
+    {key:'er',   label:'Agent Commission Early Release', cls:''},
+    {key:'aum',  label:'Agent Account Spread',           cls:''},
+    {key:'maf',  label:'MAF Float Revenue',              cls:''},
+    {key:'agFloat',label:'Agency Holding Float',         cls:''},
+    {key:'platFee',label:'Platform Subscription Fee',    cls:''},
+    {key:'otp',  label:'OTP Developer Deposits',         cls:''},
+    {key:'pm',   label:'Property Mgmt Bond Float',       cls:''},
+  ];
+  let html='';
+  streams.forEach(s=>{
+    let cum=0;
+    html+=`<tr><td>${s.label}</td>`;
+    R.forEach(r=>{cum+=r[s.key];html+=`<td>${fm(r[s.key])}</td>`;});
+    html+=`<td>${fm(cum)}</td></tr>`;
+  });
+  let cumT=0;
+  html+=`<tr class="total-row"><td>Total Revenue</td>`;
+  R.forEach(r=>{cumT+=r.rev;html+=`<td>${fm(r.rev)}</td>`;});
+  html+=`<td>${fm(cumT)}</td></tr>`;
+  document.getElementById('rev-tbody').innerHTML=html;
+}
+
+function updateAgencyRevTable(){
+  const a=getA();
+  const bmap={core:'b-core',victoria:'b-vic',national:'b-nat'};
+  let html='';
+  let tS=0,tD=0,tM=0,tE=0,tA=0,tAF=0,tPF=0,tF=0,tT=0;
+  AGENCIES.filter(ag=>ag.en).forEach(ag=>{
+    const ramp=getRamp(ag,0,a);
+    if(ramp<=0) return;
+    const price=a.price;
+    const sales=ag.sales*ramp;
+    const dep=sales*(price*a.depPct)*a.depSpread*(a.depDays/365);
+    const maf=sales*a.mafPct*a.mafAmt*a.mafSpread*(a.mafDays/365);
+    const er=sales*a.erPct*a.comm*a.erFee;
+    const aum=ag.aum*a.agSpread;
+    const agF=a.agFloat*a.agFloatSp;
+    const pf=a.platFee*12;
+    const fee=sales*(a.feeV+a.feeP);
+    const tot=dep+maf+er+aum+agF+pf+fee;
+    tS+=sales;tD+=dep;tM+=maf;tE+=er;tA+=aum;tAF+=agF;tPF+=pf;tF+=fee;tT+=tot;
+    html+=`<tr><td>${ag.name}</td><td style="text-align:center"><span class="badge ${bmap[ag.group]||'b-core'}">${ag.state}</span></td><td>${fmk(Math.round(sales))}</td><td>${fm(dep)}</td><td>${fm(maf)}</td><td>${fm(er)}</td><td>${fm(aum)}</td><td>${fm(agF)}</td><td>${fm(pf)}</td><td>${fm(fee)}</td><td style="font-weight:600;color:var(--accent)">${fm(tot)}</td></tr>`;
+  });
+  html+=`<tr class="total-row"><td>Total</td><td></td><td>${fmk(Math.round(tS))}</td><td>${fm(tD)}</td><td>${fm(tM)}</td><td>${fm(tE)}</td><td>${fm(tA)}</td><td>${fm(tAF)}</td><td>${fm(tPF)}</td><td>${fm(tF)}</td><td>${fm(tT)}</td></tr>`;
+  document.getElementById('ag-rev-tbody').innerHTML=html;
+}
+
+function updatePL(R){
+  const rows=[
+    {lbl:'REVENUE',                       sec:true},
+    {key:'dep',    lbl:'  Deposit Float Revenue'},
+    {key:'fee',    lbl:'  Settlement Release Fees'},
+    {key:'er',     lbl:'  Agent Commission Early Release'},
+    {key:'aum',    lbl:'  Agent Account Spread'},
+    {key:'maf',    lbl:'  MAF Float'},
+    {key:'agFloat',lbl:'  Agency Holding Float'},
+    {key:'platFee',lbl:'  Platform Subscription'},
+    {key:'otp',    lbl:'  OTP Developer Deposits'},
+    {key:'pm',     lbl:'  Property Mgmt Bond Float'},
+    {key:'rev',    lbl:'Gross Revenue',           sub:true},
+    {lbl:'',blank:true},
+    {lbl:'EXPENSES',                      sec:true},
+    {key:'personnel',lbl:'  Personnel (incl. 11.5% super)',exp:true},
+    {ob:'tech',    lbl:'  Technology & Cloud',    exp:true},
+    {ob:'comp',    lbl:'  Compliance & AFSL',     exp:true},
+    {ob:'off',     lbl:'  Office & Facilities',   exp:true},
+    {ob:'mktg',    lbl:'  Marketing & BD',        exp:true},
+    {ob:'lia',     lbl:'  Legal, Insurance & Audit',exp:true},
+    {key:'totalExp',lbl:'Total Expenses',         sub:true},
+    {lbl:'',blank:true},
+    {key:'ebitda', lbl:'EBITDA',                  tot:true},
+    {key:'tax',    lbl:'  Income Tax (30%)',       exp:true},
+    {key:'netProfit',lbl:'Net Profit After Tax',  tot:true},
+  ];
+  let html='';
+  rows.forEach(r=>{
+    if(r.blank){html+=`<tr><td colspan="6" style="height:7px;border:none"></td></tr>`;return;}
+    if(r.sec){html+=`<tr class="pl-section"><td>${r.lbl}</td><td></td><td></td><td></td><td></td><td></td></tr>`;return;}
+    const cls=r.tot?'total-row':r.sub?'subtotal':'';
+    html+=`<tr class="${cls}"><td>${r.lbl}</td>`;
+    R.forEach(yr=>{
+      let v=r.key?yr[r.key]:r.ob?yr.opexBreak[r.ob]:undefined;
+      if(v===undefined){html+=`<td></td>`;return;}
+      const neg=r.exp||(r.key==='tax');
+      const isEbitda=r.key==='ebitda'||r.key==='netProfit';
+      const c=isEbitda?(v>=0?'pos':'neg'):(neg?'neg':'');
+      html+=`<td class="${c}">${neg?'-':''}${fm(Math.abs(v))}</td>`;
+    });
+    html+=`</tr>`;
+  });
+  // Margin row
+  html+=`<tr><td style="color:var(--sub);font-size:10px">  EBITDA Margin</td>`;
+  R.forEach(r=>{const m=r.rev>0?r.ebitda/r.rev:0;html+=`<td class="${m>=0?'pos':'neg'}" style="font-size:10px">${pct(m)}</td>`;});
+  html+=`</tr>`;
+  document.getElementById('pl-tbody').innerHTML=html;
+
+  // Metrics
+  const hcs=YEARS.map((_,i)=>getTotalHC(i));
+  let mh='';
+  mh+=`<tr><td>Total FTE</td>${R.map((_,i)=>`<td>${hcs[i]}</td>`).join('')}</tr>`;
+  mh+=`<tr><td>Revenue / FTE</td>${R.map((r,i)=>`<td>${fm(r.rev/hcs[i])}</td>`).join('')}</tr>`;
+  mh+=`<tr><td>Transactions</td>${R.map(r=>`<td>${fmk(r.totalSales)}</td>`).join('')}</tr>`;
+  mh+=`<tr><td>Rev / Transaction</td>${R.map(r=>`<td>${r.totalSales>0?fm(r.rev/r.totalSales):'—'}</td>`).join('')}</tr>`;
+  mh+=`<tr><td>EBITDA Margin</td>${R.map(r=>`<td class="${r.ebitda>=0?'pos':'neg'}">${pct(r.rev>0?r.ebitda/r.rev:0)}</td>`).join('')}</tr>`;
+  mh+=`<tr><td>Net Profit Margin</td>${R.map(r=>`<td class="${r.netProfit>=0?'pos':'neg'}">${pct(r.rev>0?r.netProfit/r.rev:0)}</td>`).join('')}</tr>`;
+  document.getElementById('metrics-tbody').innerHTML=mh;
+}
+
+function updateBS(bsData){
+  const bRows=[
+    {lbl:'ASSETS',sec:true},
+    {k:'cash',      lbl:'  Cash & Equivalents'},
+    {k:'ar',        lbl:'  Accounts Receivable'},
+    {k:'intangible',lbl:'  Technology Platform (net)'},
+    {lbl:'  Other Assets',fixed:50000},
+    {k:'totalAssets',lbl:'Total Assets',sub:true},
+    {lbl:'',blank:true},
+    {lbl:'LIABILITIES',sec:true},
+    {k:'ap',        lbl:'  Accounts Payable'},
+    {k:'accr',      lbl:'  Accrued Liabilities'},
+    {k:'totalLiab', lbl:'Total Liabilities',sub:true},
+    {lbl:'',blank:true},
+    {lbl:'EQUITY',sec:true},
+    {k:'equity',    lbl:'Total Equity',tot:true},
+  ];
+  let html='';
+  bRows.forEach(r=>{
+    if(r.blank){html+=`<tr><td colspan="6" style="height:6px;border:none"></td></tr>`;return;}
+    if(r.sec){html+=`<tr class="pl-section"><td>${r.lbl}</td><td></td><td></td><td></td><td></td><td></td></tr>`;return;}
+    const cls=r.tot?'total-row':r.sub?'subtotal':'';
+    html+=`<tr class="${cls}"><td>${r.lbl}</td>`;
+    bsData.forEach(b=>{
+      const v=r.k?b[r.k]:r.fixed||0;
+      html+=`<td>${fm(v)}</td>`;
+    });
+    html+=`</tr>`;
+  });
+  document.getElementById('bs-tbody').innerHTML=html;
+
+  // Client funds
+  let cfm='';
+  cfm+=`<tr><td>Deposit Float (in trust)</td>${bsData.map(b=>`<td>${fm(b.clientDeposits)}</td>`).join('')}</tr>`;
+  cfm+=`<tr><td>Agency Holding Balances</td>${bsData.map(b=>`<td>${fm(b.agencyHolding)}</td>`).join('')}</tr>`;
+  cfm+=`<tr class="subtotal"><td>Total Client Funds (off-BS)</td>${bsData.map(b=>`<td>${fm(b.clientDeposits+b.agencyHolding)}</td>`).join('')}</tr>`;
+  document.getElementById('bs-cfm-tbody').innerHTML=cfm;
+}
+
+// ─── WAGE TABLE ──────────────────────────────────────────────────────────────
+function renderWageTable(){
+  let html='';
+  ROLES.forEach(r=>{
+    const totals=YEARS.map((_,yi)=>{
+      const sal=parseFloat(document.getElementById('w-'+r.id)?.value)||r.salary;
+      return sal*r.hc[yi]*1.115;
+    });
+    html+=`<tr>
+      <td style="color:var(--text)">${r.name}</td>
+      <td><input class="salary-input" id="w-${r.id}" type="number" value="${r.salary}" oninput="recalcAll()"></td>
+      ${r.hc.map(h=>`<td style="text-align:center;color:${h>0?'var(--text)':'var(--border)'}">${h||'—'}</td>`).join('')}
+      ${totals.map(t=>`<td style="color:var(--muted)">${t>0?fm(t):'—'}</td>`).join('')}
+    </tr>`;
+  });
+  // Total row
+  html+=`<tr class="total-row"><td>Total</td><td></td>
+    ${YEARS.map((_,yi)=>`<td style="text-align:center">${getTotalHC(yi)}</td>`).join('')}
+    ${YEARS.map((_,yi)=>`<td>${fm(getPersonnelCost(yi))}</td>`).join('')}
+  </tr>`;
+  const tbody=document.getElementById('wage-tbody');
+  if(tbody) tbody.innerHTML=html;
+}
+
+function updateWageTotals(){
+  // Re-render just the cost columns
+  const rows=document.querySelectorAll('#wage-tbody tr');
+  ROLES.forEach((r,ri)=>{
+    const row=rows[ri];if(!row)return;
+    const sal=parseFloat(document.getElementById('w-'+r.id)?.value)||r.salary;
+    const cells=row.querySelectorAll('td');
+    YEARS.forEach((_,yi)=>{
+      const cost=sal*r.hc[yi]*1.115;
+      const cell=cells[7+yi];
+      if(cell) cell.textContent=cost>0?fm(cost):'—';
+    });
+  });
+  const totalRow=rows[ROLES.length];
+  if(totalRow){
+    const cells=totalRow.querySelectorAll('td');
+    YEARS.forEach((_,yi)=>{
+      const cell=cells[2+yi];if(cell)cell.textContent=getTotalHC(yi);
+      const tcell=cells[7+yi];if(tcell)tcell.textContent=fm(getPersonnelCost(yi));
+    });
+  }
+}
+
+// ─── AGENCY CARDS ───────────────────────────────────────────────────────────
+function renderAgencyCards(){
+  const bmap={core:'b-core',victoria:'b-vic',national:'b-nat'};
+  ['core','victoria','national'].forEach(g=>{
+    const cont=document.getElementById('ag-'+g);if(!cont)return;
+    cont.innerHTML='';
+    AGENCIES.filter(a=>a.group===g).forEach(ag=>{
+      const d=document.createElement('div');
+      d.className='agency-card'+(g==='core'?' core-card':'')+(ag.en?' enabled':'');
+      d.id='ac-'+ag.id;
+      d.innerHTML=`
+        <div style="flex:1">
+          <div class="agency-name">${ag.name} <span class="badge ${bmap[g]}">${ag.state}</span></div>
+          <div class="agency-meta">Sales: <input class="ag-input" type="number" value="${ag.sales}" style="width:65px" onchange="updAgSales('${ag.id}',this.value)">
+          ${ag.aum>0?` AUM: <input class="ag-input" type="number" value="${ag.aum}" style="width:85px" onchange="updAgAUM('${ag.id}',this.value)">`:''}</div>
+        </div>
+        <div style="margin:0 10px">
+          <div class="agency-rev" id="ar-${ag.id}">—</div>
+          <div class="agency-rev-lbl">Y1 revenue</div>
+        </div>
+        <label class="toggle"><input type="checkbox" ${ag.en?'checked':''} ${g==='core'?'disabled':''} onchange="togAg('${ag.id}',this.checked)"><span class="toggle-slider"></span></label>`;
+      cont.appendChild(d);
+    });
+  });
+}
+
+function updateAgencyRevs(R){
+  const a=getA();
+  AGENCIES.forEach(ag=>{
+    const el=document.getElementById('ar-'+ag.id);
+    const card=document.getElementById('ac-'+ag.id);
+    if(!el)return;
+    if(ag.en){
+      const ramp=getRamp(ag,0,a);
+      if(ramp>0){
+        const sales=ag.sales*ramp;
+        const dep=sales*(a.price*a.depPct)*a.depSpread*(a.depDays/365);
+        const maf=sales*a.mafPct*a.mafAmt*a.mafSpread*(a.mafDays/365);
+        const er=sales*a.erPct*a.comm*a.erFee;
+        const aum=ag.aum*a.agSpread;
+        const agF=a.agFloat*a.agFloatSp;
+        const fee=sales*(a.feeV+a.feeP);
+        el.textContent=fm(dep+maf+er+aum+agF+fee);
+        card&&card.classList.add('enabled');
+      } else {el.textContent='Starts Y'+getA().vicYr;card&&card.classList.remove('enabled');}
+    } else {el.textContent='—';card&&card.classList.remove('enabled');}
+  });
+}
+
+function togAg(id,v){const ag=AGENCIES.find(a=>a.id===id);if(ag){ag.en=v;recalcAll();}}
+function updAgSales(id,v){const ag=AGENCIES.find(a=>a.id===id);if(ag){ag.sales=parseFloat(v)||0;recalcAll();}}
+function updAgAUM(id,v){const ag=AGENCIES.find(a=>a.id===id);if(ag){ag.aum=parseFloat(v)||0;recalcAll();}}
+function toggleGroup(g,v){AGENCIES.filter(a=>a.group===g).forEach(ag=>{ag.en=v;const c=document.querySelector('#ac-'+ag.id+' input[type=checkbox]');if(c)c.checked=v;});recalcAll();}
+function syncMWAUM(){const mw=AGENCIES.find(a=>a.id==='mw');if(mw){mw.aum=ga('a-mwAUM');const i=document.querySelector('#ac-mw .ag-input[style*="85px"]');if(i)i.value=mw.aum;}}
+
+// ─── SCENARIOS ───────────────────────────────────────────────────────────────
+function setScenario(s){
+  document.querySelectorAll('.scen-btn[id^=scen]').forEach(b=>b.classList.remove('active'));
+  document.getElementById('scen-'+s)?.classList.add('active');
+  AGENCIES.forEach(ag=>{
+    if(s==='baseline') ag.en=ag.group==='core';
+    else if(s==='victoria') ag.en=ag.group==='core'||ag.group==='victoria';
+    else ag.en=true;
+    const c=document.querySelector('#ac-'+ag.id+' input[type=checkbox]');
+    if(c) c.checked=ag.en;
+  });
+  recalcAll();
+}
+
+// ─── TABS ────────────────────────────────────────────────────────────────────
+function showTab(name,btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name)?.classList.add('active');
+  btn&&btn.classList.add('active');
+  // Resize all charts after tab becomes visible (Chart.js can't measure hidden canvases)
+  requestAnimationFrame(()=>{
+    Object.values(C).forEach(ch=>ch&&ch.resize&&ch.resize());
+    if(name==='monthly'&&_lastResults){
+      updateMonthlyCharts(ACTIVE_YEAR,_lastResults);
+    }
+    if(name==='bs'&&_lastResults){
+      const bs=calcBS(_lastResults,getA());
+      updateBSCharts(bs);
+    }
+  });
+}
+
+let _lastResults=null;
+function setMonthlyYear(y,btn){
+  ACTIVE_YEAR=y;
+  document.querySelectorAll('.yr-btn').forEach(b=>b.classList.remove('active'));
+  btn&&btn.classList.add('active');
+  if(_lastResults) updateMonthlyCharts(y,_lastResults);
+}
+
+// ─── MAIN RECALC ────────────────────────────────────────────────────────────
+function recalcAll(){
+  updateHints();
+  updateWageTotals();
+  const R=calcAll();
+  _lastResults=R;
+  const a=getA();
+  const bs=calcBS(R,a);
+  updateKPIs(R);
+  updateCharts(R);
+  updateRevenueTable(R);
+  updateAgencyRevTable();
+  updatePL(R);
+  updateBS(bs);
+  updateBSCharts(bs);
+  updateAgencyRevs(R);
+  if(document.getElementById('tab-monthly').classList.contains('active')){
+    updateMonthlyCharts(ACTIVE_YEAR,R);
+  }
+}
+
+// ─── SHARE ───────────────────────────────────────────────────────────────────
+function shareURL(){
+  const state={agencies:AGENCIES.map(a=>({id:a.id,en:a.en,sales:a.sales,aum:a.aum})),inputs:{}};
+  document.querySelectorAll('[id^="a-"],[id^="p-"],[id^="o-"],[id^="w-"]').forEach(el=>state.inputs[el.id]=el.value||el.checked);
+  const url=location.origin+location.pathname+'#'+btoa(JSON.stringify(state));
+  navigator.clipboard.writeText(url).then(()=>{
+    const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);
+  });
+}
+function loadFromURL(){
+  const h=location.hash.slice(1);if(!h)return;
+  try{
+    const s=JSON.parse(atob(h));
+    if(s.inputs)Object.entries(s.inputs).forEach(([id,v])=>{const el=document.getElementById(id);if(el){if(el.type==='checkbox')el.checked=!!v;else el.value=v;}});
+    if(s.agencies)s.agencies.forEach(sv=>{const ag=AGENCIES.find(a=>a.id===sv.id);if(ag){ag.en=sv.en;ag.sales=sv.sales;ag.aum=sv.aum;}});
+  }catch(e){}
+}
+
+// ─── HEADCOUNT TABLE ────────────────────────────────────────────────────────
+function renderHCTable(){
+  let html='';
+  ROLES.forEach(r=>{
+    html+=`<tr><td>${r.name}</td>${r.hc.map(h=>`<td>${h||'—'}</td>`).join('')}</tr>`;
+  });
+  html+=`<tr class="total-row"><td>Total FTE</td>${YEARS.map((_,i)=>`<td>${getTotalHC(i)}</td>`).join('')}</tr>`;
+  document.getElementById('hc-tbody').innerHTML=html;
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  loadFromURL();
+  renderAgencyCards();
+  renderWageTable();
+  renderHCTable();
+  initCharts();
+  recalcAll();
+});
+</script>
+</body>
+</html>
